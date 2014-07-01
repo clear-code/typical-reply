@@ -208,14 +208,16 @@ var TypicalReplyButtons = {
         if ('descendants' in aRoot) { // Thunderbird 24
           let descendants = aRoot.descendants;
           for (let i = 0, maxi = descendants.length; i < maxi; i++) {
-            folders.push(descendants.queryElementAt(i, Components.interfaces.nsIMsgFolder));
+            let folder = descendants.queryElementAt(i, Components.interfaces.nsIMsgFolder);
+            folders.push(folder.URI);
           }
         } else { // Thunderbird 17 or olders
           let descendants = Components.classes['@mozilla.org/supports-array;1']
                           .createInstance(Components.interfaces.nsISupportsArray);
           aRoot.ListDescendents(descendants);
           for (let i = 0, maxi = descendants.Count(); i < maxi; i++) {
-            folders.push(descendants.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgFolder));
+            let folder = descendants.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgFolder);
+            folders.push(folder.URI);
           }
         }
         return true;
@@ -227,6 +229,11 @@ var TypicalReplyButtons = {
       }
       return false;
     }, this);
+    try {
+      if (folders.length > 0)
+        folders.unshift(aRoot.URI);
+    } catch(e) {
+    }
     return folders.join('|');
   },
   buildSearchCondition: function(aDefinition) {
