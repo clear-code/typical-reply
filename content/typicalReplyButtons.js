@@ -168,7 +168,7 @@ var TypicalReplyButtons = {
 
     var wrapper = this.virtualFolderHelper.wrapVirtualFolder(searchFolder);
 
-    var conditions = this.buildSearchCondition();
+    var conditions = this.buildSearchCondition(aDefinition);
     if (wrapper.searchString != conditions) {
       wrapper.searchString = conditions;
       isModified = true;
