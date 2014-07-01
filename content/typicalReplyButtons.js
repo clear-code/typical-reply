@@ -117,38 +117,79 @@ var TypicalReplyButtons = {
     // This must be done after mail-tabs-session-restored.
     // Otherwise, non-ASCII search conditions are not saved correctly.
     this.buildSearchFolders();
+
+    this.startListenFolderChanges();
   },
+  startListenFolderChanges: function() {
+    var notifyFlags = Components.interfaces.nsIFolderListener.added |
+                        Components.interfaces.nsIFolderListener.removed;
+    Components.classes['@mozilla.org/messenger/services/session;1']
+      .getService(Components.interfaces.nsIMsgMailSession)
+      .AddFolderListener(this, notifyFlags);
+  },
+  // nsIFolderListener
+  OnItemAdded: function(aParent, aItem) {
+    try {
+      aItem = aItem.QueryInterface(Ci.nsIMsgFolder);
+    } catch(e) {
+      return;
+    }
+    this.buildSearchFoldersIn(aItem.rootFolder, {
+      addedFolder: aItem.URI
+    });
+  },
+  OnItemRemoved: function(aParent, aItem) {
+    try {
+      aItem = aItem.QueryInterface(Ci.nsIMsgFolder);
+    } catch(e) {
+      return;
+    }
+    this.buildSearchFoldersIn(aItem.rootFolder, {
+      removedFolder: aItem.URI
+    });
+  },
+  OnItemPropertyChanged: function() {},
+  OnItemIntPropertyChanged: function() {},
+  OnItemBoolPropertyChanged: function() {},
+  OnItemUnicharPropertyChanged: function() {},
+  OnItemEvent: function() {},
 
   buildSearchFolders: function() {
     this.utils.allAccounts.forEach(function(aAccount) {
-      this.utils.definitions.forEach(function(aDefinition) {
-        if (!aDefinition.searchFolder)
-          return;
-        try {
-          if (aAccount.incomingServer)
-            this.buildSearchFolderForAccount(aDefinition, aAccount);
-        }
-        catch(e) {
-          Components.utils.reportError(e);
-        }
-      }, this);
+      if (!aAccount.incomingServer)
+        return;
+      this.buildSearchFoldersIn(aAccount.incomingServer.rootMsgFolder);
     }, this);
   },
-  buildSearchFolderForAccount: function(aDefinition, aAccount) {
-    if (!aDefinition.subjectPrefix && !aDefinition.subject)
+  buildSearchFoldersIn: function(aRoot, aModification) {
+    if (!aRoot)
       return;
-
-    var rootFolder = aAccount.incomingServer.rootMsgFolder;
-    if (!rootFolder)
+    this.utils.definitions.forEach(function(aDefinition) {
+      try {
+        this.buildSearchFolderIn(aDefinition, aRoot, aModification);
+      }
+      catch(e) {
+        Components.utils.reportError(e);
+      }
+    }, this);
+  },
+  buildSearchFolderIn: function(aDefinition, aRoot, aModification) {
+    if (!aDefinition.searchFolder ||
+        !aDefinition.subjectPrefix &&
+        !aDefinition.subject ||
+        !aRoot)
       return;
 
     var searchTargets = aDefinition.searchTargets;
     if (!searchTargets)
       return;
 
-    var searchFolders = this.getSearchFolders(rootFolder, searchTargets.split(/[,\s]+/));
-    if (!searchFolders)
-      return;
+    var searchFolders;
+    if (!aModification) {
+      searchFolders = this.getSearchFolders(aRoot, searchTargets.split(/[,\s]+/));
+      if (!searchFolders)
+        return;
+    }
 
     var name = 'typicalReply-' + aDefinition.type;
 
@@ -156,14 +197,20 @@ var TypicalReplyButtons = {
     var isModified = false;
     var virtualFolder;
     try {
-      virtualFolder = rootFolder.getChildNamed(name);
+      virtualFolder = aRoot.getChildNamed(name);
     } catch(e) {
-     // folder not found!
+      try {
+        virtualFolder = aRoot.getChildNamed(aDefinition.label);
+        if (!(virtualFolder.flags & Components.interfaces.nsMsgFolderFlags.Virtual))
+          virtualFolder = null;
+      } catch(e) {
+        // folder not found!
+      }
     }
     if (!virtualFolder) {
       isCreation = true;
       isModified = true;
-      virtualFolder = rootFolder.addSubfolder(name);
+      virtualFolder = aRoot.addSubfolder(name);
       virtualFolder.setFlag(Components.interfaces.nsMsgFolderFlags.Virtual);
     }
 
@@ -177,7 +224,26 @@ var TypicalReplyButtons = {
       wrapper.searchString = conditions;
       isModified = true;
     }
-    if (wrapper.searchFolders != searchFolders) {
+    var currentSearchFolders = wrapper.searchFolders.map(function(aFolder) {
+      return aFolder.URI
+    }).join('|');
+    if (aModification) {
+      searchFolders = currentSearchFolders.split('|');
+      if (aModification.addedFolder) {
+        let index = searchFolders.indexOf(aModification.addedFolder);
+        if (index < 0) {
+          searchFolders.push(aModification.addedFolder);
+        }
+      }
+      if (aModification.removedFolder) {
+        let index = searchFolders.indexOf(aModification.removedFolder);
+        if (index > -1) {
+          searchFolders.splice(index, 1);
+        }
+      }
+      searchFolders = searchFolders.join('|');
+    }
+    if (currentSearchFolders != searchFolders) {
       wrapper.searchFolders = searchFolders;
       isModified = true;
     }
@@ -191,7 +257,7 @@ var TypicalReplyButtons = {
     wrapper.cleanUpMessageDatabase();
     if (isCreation) {
       virtualFolder.msgDatabase.Close(true);
-      rootFolder.NotifyItemAdded(virtualFolder);
+      aRoot.NotifyItemAdded(virtualFolder);
     }
     MailServices.accounts.saveVirtualFolders();
   },
