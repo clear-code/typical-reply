@@ -204,22 +204,9 @@ var TypicalReplyButtons = {
     aKeys.some(function(aKey) {
       aKey = aKey.toLowerCase();
       if (aKey == 'all') {
-        folders = [];
-        if ('descendants' in aRoot) { // Thunderbird 24
-          let descendants = aRoot.descendants;
-          for (let i = 0, maxi = descendants.length; i < maxi; i++) {
-            let folder = descendants.queryElementAt(i, Components.interfaces.nsIMsgFolder);
-            folders.push(folder.URI);
-          }
-        } else { // Thunderbird 17 or olders
-          let descendants = Components.classes['@mozilla.org/supports-array;1']
-                          .createInstance(Components.interfaces.nsISupportsArray);
-          aRoot.ListDescendents(descendants);
-          for (let i = 0, maxi = descendants.Count(); i < maxi; i++) {
-            let folder = descendants.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgFolder);
-            folders.push(folder.URI);
-          }
-        }
+        folders = this.utils.getDescendants(aRoot).map(function(aFolder) {
+          return aFolder.URI;
+        });
         return true;
       }
       if (typeof flags[aKey] == 'number') {

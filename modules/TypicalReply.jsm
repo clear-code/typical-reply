@@ -55,6 +55,25 @@ var TypicalReply = {
     }
     return array;
   },
+  getDescendants: function(aRoot) {
+    var folders = [];
+    if ('descendants' in aRoot) { // Thunderbird 24
+      let descendants = aRoot.descendants;
+      for (let i = 0, maxi = descendants.length; i < maxi; i++) {
+        let folder = descendants.queryElementAt(i, Ci.nsIMsgFolder);
+        folders.push(folder);
+      }
+    } else { // Thunderbird 17 or olders
+      let descendants = Cc['@mozilla.org/supports-array;1']
+                          .createInstance(Ci.nsISupportsArray);
+      aRoot.ListDescendents(descendants);
+      for (let i = 0, maxi = descendants.Count(); i < maxi; i++) {
+        let folder = descendants.GetElementAt(i).QueryInterface(Ci.nsIMsgFolder);
+        folders.push(folder);
+      }
+    }
+    return folders;
+  },
 
   get type() {
     return this.prefs.getPref(this.BASE + 'replying.type');
