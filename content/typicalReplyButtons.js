@@ -68,7 +68,12 @@ var TypicalReplyButtons = {
   },
   buildActionButton: function(aDefinition) {
     var button = document.createElement('toolbarbutton');
-    button.setAttribute('class', 'toolbarbutton-1 msgHeaderView-button hdrReplyButton');
+    if (aDefinition.icon) {
+      button.setAttribute('class', 'toolbarbutton-1 msgHeaderView-button');
+      button.setAttribute('image', aDefinition.icon);
+    } else {
+      button.setAttribute('class', 'toolbarbutton-1 msgHeaderView-button hdrReplyButton');
+    }
     button.setAttribute('label', aDefinition.label);
     button.setAttribute('data-type', aDefinition.type);
     button.setAttribute('oncommand', 'TypicalReplyButtons.onCommand(event);');
@@ -86,6 +91,10 @@ var TypicalReplyButtons = {
   buildActionItems: function(aDefinition) {
     var fragment = document.createDocumentFragment();
     var item = document.createElement('menuitem');
+    if (aDefinition.icon) {
+      item.setAttribute('class', 'menuitem-iconic');
+      item.setAttribute('image', aDefinition.icon);
+    }
     item.setAttribute('label', aDefinition.label);
     item.setAttribute('accesskey', aDefinition.accesskey);
     item.setAttribute('data-type', aDefinition.type);
