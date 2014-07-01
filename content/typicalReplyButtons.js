@@ -142,39 +142,46 @@ var TypicalReplyButtons = {
     if (!rootFolder)
       return;
 
-    var inbox = rootFolder.getFolderWithFlags(Components.interfaces.nsMsgFolderFlags.Inbox);
-    if (!inbox)
+    var searchTargets = aDefinition.searchTargets;
+    if (!searchTargets)
+      return;
+
+    var searchFolders = this.getSearchFolders(rootFolder, searchTargets.split(/[,\s]+/));
+    if (!searchFolders)
       return;
 
     var name = 'typicalReply-' + aDefinition.type;
 
     var isCreation = false;
     var isModified = false;
-    var searchFolder;
+    var virtualFolder;
     try {
-      searchFolder = rootFolder.getChildNamed(name);
+      virtualFolder = rootFolder.getChildNamed(name);
     } catch(e) {
      // folder not found!
     }
-    if (!searchFolder) {
+    if (!virtualFolder) {
       isCreation = true;
       isModified = true;
-      searchFolder = rootFolder.addSubfolder(name);
-      searchFolder.setFlag(Components.interfaces.nsMsgFolderFlags.Virtual);
+      virtualFolder = rootFolder.addSubfolder(name);
+      virtualFolder.setFlag(Components.interfaces.nsMsgFolderFlags.Virtual);
     }
 
     // We always have to set prettyName because it is not saved.
-    searchFolder.prettyName = aDefinition.label;
+    virtualFolder.prettyName = aDefinition.label;
 
-    var wrapper = this.virtualFolderHelper.wrapVirtualFolder(searchFolder);
+    var wrapper = this.virtualFolderHelper.wrapVirtualFolder(virtualFolder);
 
     var conditions = this.buildSearchCondition(aDefinition);
     if (wrapper.searchString != conditions) {
       wrapper.searchString = conditions;
       isModified = true;
     }
+    if (wrapper.searchFolders != searchFolders) {
+      wrapper.searchFolders = searchFolders;
+      isModified = true;
+    }
     if (isCreation) {
-      wrapper.searchFolders = rootFolder.URI + '|' + inbox.URI;
       wrapper.onlineSearch = false;
     }
 
@@ -183,10 +190,44 @@ var TypicalReplyButtons = {
 
     wrapper.cleanUpMessageDatabase();
     if (isCreation) {
-      searchFolder.msgDatabase.Close(true);
-      rootFolder.NotifyItemAdded(searchFolder);
+      virtualFolder.msgDatabase.Close(true);
+      rootFolder.NotifyItemAdded(virtualFolder);
     }
     MailServices.accounts.saveVirtualFolders();
+  },
+  getSearchFolders: function(aRoot, aKeys) {
+    var flags = {};
+    Object.keys(Components.interfaces.nsMsgFolderFlags).forEach(function(aKey) {
+      flags[aKey.toLowerCase()] = Components.interfaces.nsMsgFolderFlags[aKey];
+    });
+    var folders = [];
+    aKeys.some(function(aKey) {
+      aKey = aKey.toLowerCase();
+      if (aKey == 'all') {
+        folders = [];
+        if ('descendants' in aRoot) { // Thunderbird 24
+          let descendants = aRoot.descendants;
+          for (let i = 0, maxi = descendants.length; i < maxi; i++) {
+            folders.push(descendants.queryElementAt(i, Components.interfaces.nsIMsgFolder));
+          }
+        } else { // Thunderbird 17 or olders
+          let descendants = Components.classes['@mozilla.org/supports-array;1']
+                          .createInstance(Components.interfaces.nsISupportsArray);
+          aRoot.ListDescendents(descendants);
+          for (let i = 0, maxi = descendants.Count(); i < maxi; i++) {
+            folders.push(descendants.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgFolder));
+          }
+        }
+        return true;
+      }
+      if (typeof flags[aKey] == 'number') {
+        let folder = aRoot.getFolderWithFlags(flags[aKey]);
+        if (folder)
+          folders.push(folder.URI);
+      }
+      return false;
+    }, this);
+    return folders.join('|');
   },
   buildSearchCondition: function(aDefinition) {
     if (aDefinition.subjectPrefix)

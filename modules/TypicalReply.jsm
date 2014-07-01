@@ -129,6 +129,7 @@ var TypicalReply = {
       priority:      this.prefs.getLocalizedPref(base + 'priority'),
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),
+      searchTargets  this.prefs.getLocalizedPref(base + 'searchTargets'),
       icon:          this.prefs.getLocalizedPref(base + 'icon')
     };
   }
