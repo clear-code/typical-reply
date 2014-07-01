@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<!DOCTYPE overlay SYSTEM "chrome://typical-reply/locale/typical-reply.dtd">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="./typicalReplyButtons.js" />
+  <toolbarpalette id="header-view-toolbar-palette">
+    <toolbaritem id="typicalReply-buttons-container"
+      label="&buttons.label;"
+      tooltiptext="&buttons.tooltiptext;"
+      removable="true">
+      <toolbarbutton id="typicalReply-actions-button"
+        type="menu"
+        class="toolbarbutton-1 msgHeaderView-button hdrReplyButton"
+        label="&button.actions.label;"
+        tooltiptext="&button.actions.tooltiptext;">
+        <menupopup id="typicalReply-menupopup"
+          oncommand="TypicalReplyButtons.onCommand(event);"/>
+      </toolbarbutton>
+    </toolbaritem>
+  </toolbarpalette>
+</overlay>
