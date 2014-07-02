@@ -24,46 +24,61 @@ var TypicalReplyCompose = {
 
     var definition = this.utils.getDefinition(this.utils.type);
 
-    var subjectField = GetMsgSubjectElement();
-    if (definition.subject) {
-      subjectField.value = definition.subject;
-    }
-    if (definition.subjectPrefix) {
-      subjectField.value = definition.subjectPrefix + ': ' + subjectField.value;
-    }
-
-    if (definition.body) {
-      editor.insertText(definition.body);
-    }
-    if (definition.bodyImage &&
-        editor instanceof Components.interfaces.nsIHTMLEditor) {
-      if (definition.body) {
-        let lineBreak = editor.createElementWithDefaults('br');
-        editor.insertElementAtSelection(lineBreak, false);
-      }
-      let image = editor.createElementWithDefaults('img');
-      image.setAttribute('src', definition.bodyImage);
-      editor.insertElementAtSelection(image, false);
-    }
-
-    if (definition.recipients == this.utils.RECIPIENTS_BLANK) {
-      awResetAllRows();
-      AdjustFocus();
-    }
-
-    if (definition.priority) {
-      let msgCompFields = gMsgCompose.compFields;
-      if (msgCompFields) {
-        msgCompFields.priority = definition.priority;
-        updatePriorityToolbarButton(definition.priority)
-      }
-    }
+    this.applySubject(definition);
+    this.applyBody(definition);
+    this.applyRecipients(definition);
+    this.applyPriority(definition);
 
     editor.resetModificationCount();
     editor.suppressDispatchingInputEvent = false;
     editor.enableUndo(true);
 
     this.utils.reset();
+  },
+  applySubject: function(aDefinition) {
+    var subjectField = GetMsgSubjectElement();
+    if (aDefinition.subject) {
+      subjectField.value = aDefinition.subject;
+    }
+    if (aDefinition.subjectPrefix) {
+      subjectField.value = aDefinition.subjectPrefix + ': ' + subjectField.value;
+    }
+  },
+  applyBody: function(aDefinition) {
+    var editor = gMsgCompose.editor;
+    if (aDefinition.body) {
+      editor.insertText(aDefinition.body);
+    }
+    if (aDefinition.bodyImage &&
+        editor instanceof Components.interfaces.nsIHTMLEditor) {
+      if (aDefinition.body) {
+        let lineBreak = editor.createElementWithDefaults('br');
+        editor.insertElementAtSelection(lineBreak, false);
+      }
+      let image = editor.createElementWithDefaults('img');
+      image.setAttribute('src', aDefinition.bodyImage);
+      editor.insertElementAtSelection(image, false);
+    }
+  },
+  applyRecipients: function(aDefinition) {
+    switch (aDefinition.recipients) {
+      case this.utils.RECIPIENTS_BLANK:
+        awResetAllRows();
+        AdjustFocus();
+        return;
+
+      default:
+        return;
+    }
+  },
+  applyPriority: function(aDefinition) {
+    if (aDefinition.priority) {
+      let msgCompFields = gMsgCompose.compFields;
+      if (msgCompFields) {
+        msgCompFields.priority = aDefinition.priority;
+        updatePriorityToolbarButton(aDefinition.priority)
+      }
+    }
   },
 
   handleEvent: function(aEvent) {
