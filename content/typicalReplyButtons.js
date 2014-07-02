@@ -131,6 +131,8 @@ var TypicalReplyButtons = {
   OnItemAdded: function(aParent, aItem) {
     try {
       aItem = aItem.QueryInterface(Ci.nsIMsgFolder);
+      if (aItem.flags & Components.interfaces.nsMsgFolderFlags.Virtual)
+        return;
     } catch(e) {
       return;
     }
@@ -141,6 +143,8 @@ var TypicalReplyButtons = {
   OnItemRemoved: function(aParent, aItem) {
     try {
       aItem = aItem.QueryInterface(Ci.nsIMsgFolder);
+      if (aItem.flags & Components.interfaces.nsMsgFolderFlags.Virtual)
+        return;
     } catch(e) {
       return;
     }
