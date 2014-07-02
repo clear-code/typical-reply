@@ -67,9 +67,25 @@ var TypicalReplyCompose = {
         AdjustFocus();
         return;
 
+      case this.utils.RECIPIENTS_FORWARD:
+        this.awRecipientItems.forEach(function(aItem) {
+          var chooser = this.getRecipientTypeChooser(aItem);
+          if (chooser.value == 'addr_to')
+            chooser.value = 'addr_cc';
+        }, this);
+        awAppendNewRow(true);
+        return;
+
       default:
         return;
     }
+  },
+  get awRecipientItems() {
+    var items = document.querySelectorAll('#addressingWidget listitem.addressingWidgetItem');
+    return Array.slice(items, 0);
+  },
+  getRecipientTypeChooser: function(aItem) {
+    return aItem.querySelector('menulist');
   },
   applyPriority: function(aDefinition) {
     if (aDefinition.priority) {

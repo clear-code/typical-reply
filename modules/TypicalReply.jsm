@@ -18,6 +18,7 @@ var TypicalReply = {
   RECIPIENTS_SENDER: 'sender',
   RECIPIENTS_ALL:    'all',
   RECIPIENTS_BLANK:  'blank',
+  RECIPIENTS_FORWARD: 'forward',
 
   get prefs() {
     delete this.prefs;

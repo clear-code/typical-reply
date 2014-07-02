@@ -28,7 +28,8 @@ var TypicalReplyButtons = {
 
     this.utils.type = type;
 
-    if (definition.recipients == this.utils.RECIPIENTS_ALL)
+    if (definition.recipients == this.utils.RECIPIENTS_ALL ||
+        definition.recipients == this.utils.RECIPIENTS_FORWARD)
       MsgReplyToAllMessage(aEvent);
     else
       MsgReplySender(aEvent);
