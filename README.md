@@ -66,6 +66,7 @@ For example, assume that you are going to add a new "Awesome!" button.
     
     * `all`: Same to "Reply to All". The reply inherits To, Cc, and Bcc from the original mail.
     * `sender`: Same to "Reply to Sender". The reply will be sent to the author of the original mail.
+    * `blank`: The list of recipients will become blank completely.
     
     For example:
      
