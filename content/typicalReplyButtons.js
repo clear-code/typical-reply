@@ -84,7 +84,7 @@ var TypicalReplyButtons = {
     else {
       button.setAttribute('type', 'menu-button');
       let menupopup = document.createElement('menupopup');
-      this.buildActionItems(aDefinition, menupopup);
+      menupopup.appendChild(this.buildActionItems(aDefinition));
       button.appendChild(menupopup);
     }
     return button;
