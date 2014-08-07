@@ -111,7 +111,8 @@ var TypicalReplyCompose = {
     var addresses = this.awRecipientItems.map(function(aItem) {
       var field = this.getRecipientField(aItem);
       return field.value;
-    });
+    }, this);
+
     if (this.utils.checkAllowedForRecipients(addresses, aDefinition.allowedDomains))
       return;
 

@@ -83,7 +83,7 @@ var TypicalReply = {
     var names = {};
     var fullNames = {};
     var numAddresses = MimeHeaderParser.parseHeadersWithArray(
-                         addressesSource, addresses, names, fullNames);
+                         aMIMEFieldValue, addresses, names, fullNames);
     return addresses.value;
   },
 
