@@ -112,7 +112,7 @@ For example, assume that you are going to add a new "Awesome!" button.
      
  11. Define behaviour of auto-send.
      
-         pref("extensions.typical-reply@clear-code.com.reply.awesome.autoSend", "always");
+         pref("extensions.typical-reply@clear-code.com.reply.awesome.autoSend", "noquote");
      
      If you set `autoSend` to `always`, then typical replies are sent to recipients automatically
      without confirmation. If you set it to `noquote`, then typical replies are sent automatically
@@ -141,7 +141,8 @@ pref("extensions.typical-reply@clear-code.com.reply.awesome.priority",      "");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.separate",      false);
 pref("extensions.typical-reply@clear-code.com.reply.awesome.searchFolder",  true);
 pref("extensions.typical-reply@clear-code.com.reply.awesome.searchTargets", "all");
-pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedRecipients", "*");
+pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "*");
+pref("extensions.typical-reply@clear-code.com.reply.awesome.autoSend",      "noquote");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",          "data:image/png,...(awesome.png)...");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.bodyImage",     "data:image/png,...(awesome.png)...");
 ~~~
