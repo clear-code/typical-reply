@@ -110,7 +110,15 @@ For example, assume that you are going to add a new "Awesome!" button.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "example.com, example.jp");
      
- 11. Define images for the type.
+ 11. Define behaviour of auto-send.
+     
+         pref("extensions.typical-reply@clear-code.com.reply.awesome.autoSend", "always");
+     
+     If you set `autoSend` to `always`, then typical replies are sent to recipients automatically
+     without confirmation. If you set it to `noquote`, then typical replies are sent automatically
+     only when there is no quotation in the body. Otherwise, you have to click the "Send" button
+     manually.
+ 12. Define images for the type.
      You can specify images as an URI.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",      "data:image/png,...");
