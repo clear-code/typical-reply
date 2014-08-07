@@ -176,7 +176,7 @@ var TypicalReply = {
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),
       searchTargets: this.prefs.getLocalizedPref(base + 'searchTargets'),
-      allowedDomains: (this.prefs.getLocalizedPref(base + 'allowedDomains') || '').strip(),
+      allowedDomains: (this.prefs.getLocalizedPref(base + 'allowedDomains') || '').trim(),
       icon:          this.prefs.getLocalizedPref(base + 'icon')
     };
   }
