@@ -17,7 +17,8 @@ var TypicalReplyCompose = {
     editor.enableUndo(false);
     editor.suppressDispatchingInputEvent = true;
 
-    if (!this.utils.quote) {
+    var quote = this.utils.quote;
+    if (!quote) {
       editor.selectAll();
       editor.deleteSelection(1, 0);
     }
@@ -36,6 +37,7 @@ var TypicalReplyCompose = {
     this.utils.reset();
 
     this.checkAllowed(definition);
+    this.processAutoSend(definition, quote);
   },
   applySubject: function(aDefinition) {
     var subjectField = GetMsgSubjectElement();
@@ -117,6 +119,20 @@ var TypicalReplyCompose = {
       return;
 
     window.close();
+  },
+
+  processAutoSend: function(aDefinition, aQuote) {
+    switch (aDefinition.autoSend) {
+      case this.utils.AUTO_SEND_NO_QUOTE:
+        if (aQuote)
+          return;
+      case this.utils.AUTO_SEND_ALWAYS:
+        goDoCommand('cmd_sendNow');
+        return;
+
+      default:
+        return;
+    }
   },
 
   handleEvent: function(aEvent) {

@@ -19,6 +19,7 @@ pref("extensions.typical-reply@clear-code.com.reply.accept.separate", false);
 pref("extensions.typical-reply@clear-code.com.reply.accept.searchFolder", false);
 pref("extensions.typical-reply@clear-code.com.reply.accept.searchTargets", "all");
 pref("extensions.typical-reply@clear-code.com.reply.accept.allowedDomains", "*");
+pref("extensions.typical-reply@clear-code.com.reply.accept.autoSend", "noquote");
 pref("extensions.typical-reply@clear-code.com.reply.accept.icon", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.accept.bodyImage", "chrome://typical-reply/locale/typical-reply.properties");
 
@@ -34,6 +35,7 @@ pref("extensions.typical-reply@clear-code.com.reply.reject.separate", false);
 pref("extensions.typical-reply@clear-code.com.reply.reject.searchFolder", false);
 pref("extensions.typical-reply@clear-code.com.reply.reject.searchTargets", "all");
 pref("extensions.typical-reply@clear-code.com.reply.reject.allowedDomains", "*");
+pref("extensions.typical-reply@clear-code.com.reply.reject.autoSend", "noquote");
 pref("extensions.typical-reply@clear-code.com.reply.reject.icon", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.reject.bodyImage", "chrome://typical-reply/locale/typical-reply.properties");
 
@@ -49,6 +51,7 @@ pref("extensions.typical-reply@clear-code.com.reply.like.separate", true);
 pref("extensions.typical-reply@clear-code.com.reply.like.searchFolder", true);
 pref("extensions.typical-reply@clear-code.com.reply.like.searchTargets", "all");
 pref("extensions.typical-reply@clear-code.com.reply.like.allowedDomains", "*");
+pref("extensions.typical-reply@clear-code.com.reply.like.autoSend", "noquote");
 pref("extensions.typical-reply@clear-code.com.reply.like.icon", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.like.bodyImage", "chrome://typical-reply/locale/typical-reply.properties");
 

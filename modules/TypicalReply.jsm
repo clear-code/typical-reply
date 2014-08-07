@@ -20,6 +20,10 @@ var TypicalReply = {
   RECIPIENTS_BLANK:  'blank',
   RECIPIENTS_FORWARD: 'forward',
 
+  AUTO_SEND_NEVER:    'never',
+  AUTO_SEND_ALWAYS:   'always',
+  AUTO_SEND_NO_QUOTE: 'noquote',
+
   get prefs() {
     delete this.prefs;
     let { prefs } = Components.utils.import('resource://typical-reply-modules/prefs.js', {});
@@ -170,13 +174,14 @@ var TypicalReply = {
       subject:       this.prefs.getLocalizedPref(base + 'subject'),
       body:          this.prefs.getLocalizedPref(base + 'body'),
       bodyImage:     this.prefs.getLocalizedPref(base + 'bodyImage'),
-      recipients:    this.prefs.getLocalizedPref(base + 'recipients'),
+      recipients:    (this.prefs.getLocalizedPref(base + 'recipients') || '').toLowerCase(),
       alwaysQuote:   this.prefs.getLocalizedPref(base + 'alwaysQuote'),
       priority:      this.prefs.getLocalizedPref(base + 'priority'),
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),
       searchTargets: this.prefs.getLocalizedPref(base + 'searchTargets'),
       allowedDomains: (this.prefs.getLocalizedPref(base + 'allowedDomains') || '').trim(),
+      autoSend:      (this.prefs.getLocalizedPref(base + 'autoSend') || '').toLowerCase(),
       icon:          this.prefs.getLocalizedPref(base + 'icon')
     };
   }
