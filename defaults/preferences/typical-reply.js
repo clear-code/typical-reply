@@ -57,3 +57,5 @@ pref("extensions.typical-reply@clear-code.com.reply.like.bodyImage", "chrome://t
 
 pref("extensions.typical-reply@clear-code.com.label.quote.before", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.label.quote.after", "chrome://typical-reply/locale/typical-reply.properties");
+pref("extensions.typical-reply@clear-code.com.label.notAllowed.title", "chrome://typical-reply/locale/typical-reply.properties");
+pref("extensions.typical-reply@clear-code.com.label.notAllowed.message", "chrome://typical-reply/locale/typical-reply.properties");

@@ -118,6 +118,10 @@ var TypicalReplyCompose = {
     if (this.utils.checkAllowedForRecipients(addresses, aDefinition.allowedDomains))
       return;
 
+    var title = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.title');
+    var message = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.message');
+    Services.prompt.alert(window, title, message)
+
     window.close();
   },
 
