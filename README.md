@@ -99,7 +99,18 @@ For example, assume that you are going to add a new "Awesome!" button.
     * `all`: Finds all typical reply messages from all folders of the account.
     * `inbox`: Finxs typical reply messges only from the inbox.
     
- 10. Define images for the type.
+ 10. Define allowed recipient domains.
+     
+         pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "*");
+     
+     If you set `allowedDomains` to `*` or a blank string, then typical replies can be sent
+     for any recipient.
+     Otherwise - if you write a comma-separated list of domains, then you can send typical replies
+     only when all recipients are included in the list. For example:
+     
+         pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "example.com, example.jp");
+     
+ 11. Define images for the type.
      You can specify images as an URI.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",      "data:image/png,...");
@@ -122,6 +133,7 @@ pref("extensions.typical-reply@clear-code.com.reply.awesome.priority",      "");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.separate",      false);
 pref("extensions.typical-reply@clear-code.com.reply.awesome.searchFolder",  true);
 pref("extensions.typical-reply@clear-code.com.reply.awesome.searchTargets", "all");
+pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedRecipients", "*");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",          "data:image/png,...(awesome.png)...");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.bodyImage",     "data:image/png,...(awesome.png)...");
 ~~~

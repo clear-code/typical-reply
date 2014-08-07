@@ -76,6 +76,17 @@ var TypicalReply = {
     return folders;
   },
 
+  extractAddresses: function(aMIMEFieldValue) {
+    var MimeHeaderParser = Cc['@mozilla.org/messenger/headerparser;1']
+                             .getService(Ci.nsIMsgHeaderParser);
+    var addresses = {};
+    var names = {};
+    var fullNames = {};
+    var numAddresses = MimeHeaderParser.parseHeadersWithArray(
+                         addressesSource, addresses, names, fullNames);
+    return addresses.value;
+  },
+
   get type() {
     return this.prefs.getPref(this.BASE + 'replying.type');
   },
@@ -150,6 +161,7 @@ var TypicalReply = {
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),
       searchTargets: this.prefs.getLocalizedPref(base + 'searchTargets'),
+      allowedDomains: this.prefs.getLocalizedPref(base + 'allowedDomains'),
       icon:          this.prefs.getLocalizedPref(base + 'icon')
     };
   }
