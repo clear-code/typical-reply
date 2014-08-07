@@ -122,7 +122,7 @@ var TypicalReplyCompose = {
     var message = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.message');
     Services.prompt.alert(window, title, message)
 
-    window.close();
+    goDoCommand('cmd_close');
   },
 
   processAutoSend: function(aDefinition, aQuote) {
