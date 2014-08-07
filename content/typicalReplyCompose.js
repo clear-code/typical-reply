@@ -108,20 +108,11 @@ var TypicalReplyCompose = {
   },
 
   checkAllowed: function(aDefinition) {
-    var allowedDomains = aDefinition.allowedDomains.strip();
-    if (allowedDomains == '' || allowedDomains == '*')
-      return;
-
-    allowedDomains = allowedDomains.split(/\s*,\s*/);
-    if (this.awRecipientItems.every(function(aItem) {
-          var field = this.getRecipientField(aItem);
-          var addresses = this.utils.extractAddresses(field.value);
-          return addresses.every(function(aAddress) {
-            return allowedDomains.some(function(aDomain) {
-              return aAddress.indexOf('@' + aDomain) > 0;
-            });
-          }, this);
-        }, this))
+    var addresses = this.awRecipientItems.map(function(aItem) {
+      var field = this.getRecipientField(aItem);
+      return field.value;
+    });
+    if (this.utils.checkAllowedForRecipients(addresses, aDefinition.allowedDomains))
       return;
 
     window.close();

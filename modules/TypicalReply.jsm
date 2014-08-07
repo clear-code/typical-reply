@@ -142,6 +142,21 @@ var TypicalReply = {
     return aString.replace(/([\.\+\*\?\:\[\]\\^\$\#\%\{\}\|\&])/g, '\\$1');
   },
 
+  checkAllowedForRecipients: function(aRecipients, aAllowedDomains) {
+    if (aAllowedDomains == '' || aAllowedDomains == '*')
+      return true;
+
+    aAllowedDomains = aAllowedDomains.split(/\s*,\s*/);
+    return aRecipients.every(function(aRecipient) {
+      var addresses = this.extractAddresses(aRecipient);
+      return addresses.every(function(aAddress) {
+        return aAllowedDomains.some(function(aDomain) {
+          return aAddress.indexOf('@' + aDomain) > 0;
+        });
+      }, this);
+    }, this);
+  },
+
   getDefinition: function(aType) {
     var base = this.BASE + 'reply.' + aType + '.';
     return {
@@ -161,7 +176,7 @@ var TypicalReply = {
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),
       searchTargets: this.prefs.getLocalizedPref(base + 'searchTargets'),
-      allowedDomains: this.prefs.getLocalizedPref(base + 'allowedDomains'),
+      allowedDomains: (this.prefs.getLocalizedPref(base + 'allowedDomains') || '').strip(),
       icon:          this.prefs.getLocalizedPref(base + 'icon')
     };
   }
