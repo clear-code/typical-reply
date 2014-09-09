@@ -58,7 +58,7 @@ XPCOMUtils.defineLazyModuleGetter(this,
  *   @param label         String: the name of the folder
  *   @param subject       String: the subject to be matched (optional)
  *   @param subjectPrefix String: the prefix of the subject to be matched (optional)
- *   @param searchTargets String: "all" or comma-separated URIs of mail folders
+ *   @param searchTargets String: "all" or comma-separated URIs of mail folders (optional, default=all)
  */
 function SearchFolderManager(aDefinitions) {
   this.definitions = aDefinitions;
