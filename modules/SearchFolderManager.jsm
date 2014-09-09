@@ -184,7 +184,7 @@ SearchFolderManager.prototype = {
     }, this);
   },
   buildSearchFolderIn: function(aDefinition, aRoot, aModification) {
-    if (!aDefinition.condition &&
+    if (!aDefinition.conditions &&
         !aDefinition.subjectPrefix &&
         !aDefinition.subject ||
         !aRoot)
