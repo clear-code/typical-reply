@@ -12,6 +12,8 @@ var Cr = Components.results;
 var AccountManager = Cc['@mozilla.org/messenger/account-manager;1']
                        .getService(Ci.nsIMsgAccountManager);
 
+Cu.import('resource://typical-reply-modules/SearchFolderManager.jsm');
+
 var TypicalReply = {
   BASE: 'extensions.typical-reply@clear-code.com.',
 
@@ -28,56 +30,6 @@ var TypicalReply = {
     delete this.prefs;
     let { prefs } = Components.utils.import('resource://typical-reply-modules/prefs.js', {});
     return this.prefs = prefs;
-  },
-
-  get allAccounts() {
-    return this.toArray(AccountManager.accounts, Ci.nsIMsgAccount);
-  },
-  get allAccountKeys() {
-    return this.allAccounts.map(function(aAccount) {
-      return this.getAccountKey(aAccount);
-    }, this).filter(function(aKey) {
-      return aKey != '';
-    });
-  },
-  toArray: function (aEnumerator, aInterface) {
-    aInterface = aInterface || Ci.nsISupports;
-    var array = [];
-    if (aEnumerator instanceof Ci.nsISupportsArray) {
-      let count = aEnumerator.Count();
-      for (let i = 0; i < count; i++) {
-        array.push(aEnumerator.QueryElementAt(i, aInterface));
-      }
-    } else if (aEnumerator instanceof Ci.nsIArray) {
-      let count = aEnumerator.length;
-      for (let i = 0; i < count; i++) {
-        array.push(aEnumerator.queryElementAt(i, aInterface));
-      }
-    } else if (aEnumerator instanceof Ci.nsISimpleEnumerator) {
-      while (aEnumerator.hasMoreElements()) {
-        array.push(aEnumerator.getNext().QueryInterface(aInterface));
-      }
-    }
-    return array;
-  },
-  getDescendants: function(aRoot) {
-    var folders = [];
-    if ('descendants' in aRoot) { // Thunderbird 24
-      let descendants = aRoot.descendants;
-      for (let i = 0, maxi = descendants.length; i < maxi; i++) {
-        let folder = descendants.queryElementAt(i, Ci.nsIMsgFolder);
-        folders.push(folder);
-      }
-    } else { // Thunderbird 17 or olders
-      let descendants = Cc['@mozilla.org/supports-array;1']
-                          .createInstance(Ci.nsISupportsArray);
-      aRoot.ListDescendents(descendants);
-      for (let i = 0, maxi = descendants.Count(); i < maxi; i++) {
-        let folder = descendants.GetElementAt(i).QueryInterface(Ci.nsIMsgFolder);
-        folders.push(folder);
-      }
-    }
-    return folders;
   },
 
   extractAddresses: function(aMIMEFieldValue) {
@@ -186,3 +138,5 @@ var TypicalReply = {
     };
   }
 };
+
+new SearchFolderManager(TypicalReply.definitions);
