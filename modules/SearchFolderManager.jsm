@@ -1,7 +1,7 @@
 /**
  * @fileOverview Search Folder Manager for Thunderbird
  * @author       ClearCode Inc.
- * @version      1
+ * @version      2
  *
  * @description
  *   Usage:
@@ -9,6 +9,8 @@
  *     new SerchFolderManager([
  *       { label:         'Important',
  *         subjectPrefix: '[Important]' },
+ *       { label:         'FYI',
+ *         conditions:    'OR (subject,begins with,FYI) OR (subject,begins with,[FYI])' },
  *       { label:         'DenyHosts Reports',
  *         subject:       'DenyHosts Report from www.example.com' },
  *       ...
@@ -56,6 +58,7 @@ XPCOMUtils.defineLazyModuleGetter(this,
  *
  * Definition:
  *   @param label         String: the name of the folder
+ *   @param conditions    String: the search conditions (optional)
  *   @param subject       String: the subject to be matched (optional)
  *   @param subjectPrefix String: the prefix of the subject to be matched (optional)
  *   @param searchTargets String: "all" or comma-separated URIs of mail folders (optional, default=all)
@@ -293,6 +296,9 @@ SearchFolderManager.prototype = {
     return folders.join('|');
   },
   buildSearchCondition: function(aDefinition) {
+    if (aDefinition.conditions)
+      return this.UnicodeToUTF8(aDefinition.conditions);
+
     if (aDefinition.subjectPrefix)
       return 'AND (subject,begins with,' + this.UnicodeToUTF8(aDefinition.subjectPrefix) + ')';
 
