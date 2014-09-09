@@ -30,6 +30,19 @@ XPCOMUtils.defineLazyModuleGetter(this,
                                   'VirtualFolderHelper',
                                   'resource:///modules/virtualFolderWrapper.js');
 
+/**
+ * Initializes a search folder manager for given folder
+ * definitions (search conditions).
+ *
+ * @param Array of Definition
+ *        An array of search folder definitions (search conditions).
+ *
+ * Definition:
+ *   @param label         String: the name of the folder
+ *   @param subject       String: the subject to be matched (optional)
+ *   @param subjectPrefix String: the prefix of the subject to be matched (optional)
+ *   @param searchTargets String: "all" or comma-separated URIs of mail folders
+ */
 function SearchFolderManager(aDefinitions) {
   this.definitions = aDefinitions;
 
