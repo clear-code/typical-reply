@@ -139,4 +139,6 @@ var TypicalReply = {
   }
 };
 
-new SearchFolderManager(TypicalReply.definitions);
+new SearchFolderManager(TypicalReply.definitions.filter(function(aDefinition) {
+  return aDefinition.searchFolder;
+});
