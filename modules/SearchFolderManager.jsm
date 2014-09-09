@@ -1,6 +1,23 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/**
+ * @fileOverview Search Folder Manager for Thunderbird
+ * @author       ClearCode Inc.
+ * @version      1
+ *
+ * @description
+ *   Usage:
+ *     Components.utills.import('resource://.../SerchFolderManager.jsm');
+ *     new SerchFolderManager([
+ *       { label:         'Important',
+ *         subjectPrefix: '[Important]' },
+ *       { label:         'DenyHosts Reports',
+ *         subject:       'DenyHosts Report from www.example.com' },
+ *       ...
+ *     ]);
+ *
+ * @license
+ *   The MIT License, Copyright (c) 2014 ClearCode Inc.
+ * @url https://github.com/clear-code/js-codemodule-search-folder-manager
+ */
 
 var EXPORTED_SYMBOLS = ['SearchFolderManager'];
 
@@ -169,10 +186,7 @@ SearchFolderManager.prototype = {
         !aRoot)
       return;
 
-    var searchTargets = aDefinition.searchTargets;
-    if (!searchTargets)
-      return;
-
+    var searchTargets = aDefinition.searchTargets || 'all';
     var searchFolders;
     if (!aModification) {
       searchFolders = this.getSearchFolders(aRoot, searchTargets.split(/[,\s]+/));
