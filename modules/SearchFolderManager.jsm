@@ -1,7 +1,7 @@
 /**
  * @fileOverview Search Folder Manager for Thunderbird
  * @author       ClearCode Inc.
- * @version      2
+ * @version      3
  *
  * @description
  *   Usage:
@@ -184,7 +184,8 @@ SearchFolderManager.prototype = {
     }, this);
   },
   buildSearchFolderIn: function(aDefinition, aRoot, aModification) {
-    if (!aDefinition.subjectPrefix &&
+    if (!aDefinition.condition &&
+        !aDefinition.subjectPrefix &&
         !aDefinition.subject ||
         !aRoot)
       return;
