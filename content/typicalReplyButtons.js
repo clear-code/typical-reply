@@ -133,6 +133,33 @@ var TypicalReplyButtons = {
       toolbar.setAttribute('defaultset', defaultset.replace(matcher, '$1,' + extraItems));
     else
       toolbar.setAttribute('defaultset', defaultset + ',' + extraItems);
+  },
+
+  migrate: function() {
+    var version = this.utils.lastConfigVersion;
+    if (version >= this.utils.CONFIG_VERSION)
+      return;
+
+    var toolbar = this.toolbar;
+    if (version == 0) {
+      let currentSet = toolbar.currentSet;
+      let itemInserted = false;
+      if (currentSet && currentSet != '__empty') {
+        currentSet = currentSet.split(',');
+        let nextItemIndex = currentSet.indexOf('typicalReply-buttons-container');
+        this.toolbarItemIDs.forEach(function(aID) {
+          if (currentSet.indexOf(aID) > -1)
+            return;
+
+          currentSet.splice(nextItemIndex, 0, aID);
+          itemInserted = true;
+        });
+        if (itemInserted)
+          toolbar.currentSet = currentSet.join(',');
+      }
+    }
+
+    this.utils.lastConfigVersion = this.utils.CONFIG_VERSION;
   }
 };
 
@@ -141,4 +168,8 @@ window.addEventListener('DOMContentLoaded', function TypicalReplyButtonsSetup() 
 
   TypicalReplyButtons.buildUI();
   TypicalReplyButtons.installToolbarButtons();
+  window.addEventListener('load', function TypicalReplyButtonsSetupWithDelay() {
+    window.removeEventListener('load', TypicalReplyButtonsSetupWithDelay, false);
+    TypicalReplyButtons.migrate();
+  }, false);
 }, false);

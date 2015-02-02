@@ -26,6 +26,15 @@ var TypicalReply = {
   AUTO_SEND_ALWAYS:   'always',
   AUTO_SEND_NO_QUOTE: 'noquote',
 
+  CONFIG_VERSION: 1,
+
+  get lastConfigVersion() {
+    return this.prefs.getPref(this.BASE + 'configVersion') || 0;
+  },
+  set lastConfigVersion(aVersion) {
+    return this.prefs.setPref(this.BASE + 'configVersion', aVersion);
+  },
+
   get prefs() {
     delete this.prefs;
     let { prefs } = Components.utils.import('resource://typical-reply-modules/prefs.js', {});
