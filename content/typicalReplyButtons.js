@@ -29,6 +29,9 @@ var TypicalReplyButtons = {
       MsgReplySender(aEvent);
   },
 
+  get toolbar() {
+    return document.getElementById('header-view-toolbar');
+  },
   get palette() {
     return document.getElementById('header-view-toolbar-palette');
   },
@@ -119,6 +122,17 @@ var TypicalReplyButtons = {
       fragment.appendChild(withQuote);
     }
     return fragment;
+  },
+
+  installToolbarButtons: function() {
+    var extraItems = this.toolbarItemIDs.join(',');
+    var toolbar = this.toolbar;
+    var matcher = /\b(hdrReplyToSenderButton,hdrSmartReplyButton|hdrReplyToSenderButton|hdrSmartReplyButton|hdrForwardButton)\b/;
+    var defaultset = toolbar.getAttribute('defaultset');
+    if (matcher.test(defaultset))
+      toolbar.setAttribute('defaultset', defaultset.replace(matcher, '$1,' + extraItems));
+    else
+      toolbar.setAttribute('defaultset', defaultset + ',' + extraItems);
   }
 };
 
@@ -126,13 +140,5 @@ window.addEventListener('DOMContentLoaded', function TypicalReplyButtonsSetup() 
   window.removeEventListener('DOMContentLoaded', TypicalReplyButtonsSetup, false);
 
   TypicalReplyButtons.buildUI();
-
-  var extraItems = TypicalReplyButtons.toolbarItemIDs.join(',');
-  var toolbar = document.getElementById('header-view-toolbar');
-  var matcher = /\b(hdrReplyToSenderButton,hdrSmartReplyButton|hdrReplyToSenderButton|hdrSmartReplyButton|hdrForwardButton)\b/;
-  var defaultset = toolbar.getAttribute('defaultset');
-  if (matcher.test(defaultset))
-    toolbar.setAttribute('defaultset', defaultset.replace(matcher, '$1,' + extraItems));
-  else
-    toolbar.setAttribute('defaultset', defaultset + ',' + extraItems);
+  TypicalReplyButtons.installToolbarButtons();
 }, false);
