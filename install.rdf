@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="typical-reply@clear-code.com"
                    em:name="Typical Reply"
-                   em:version="0.3"
+                   em:version="0.4"
                    em:description="Provides ability to send/receive typical replies in a team."
                    em:creator="ClearCode Inc."
                    em:unpack="true"
