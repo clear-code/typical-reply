@@ -78,7 +78,8 @@ var TypicalReplyCompose = {
             chooser.value = 'addr_cc';
         }, this);
         awAppendNewRow(true);
-        let (items = this.awRecipientItems) {
+        {
+          let items = this.awRecipientItems;
           let appendedRow = items[items.length - 1];
           let chooser = this.getRecipientTypeChooser(appendedRow);
           chooser.value = 'addr_to';
