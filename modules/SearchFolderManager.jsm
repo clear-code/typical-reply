@@ -1,7 +1,7 @@
 /**
  * @fileOverview Search Folder Manager for Thunderbird
  * @author       ClearCode Inc.
- * @version      3
+ * @version      4
  *
  * @description
  *   Usage:
@@ -17,7 +17,7 @@
  *     ]);
  *
  * @license
- *   The MIT License, Copyright (c) 2014 ClearCode Inc.
+ *   The MIT License, Copyright (c) 2014-2018 ClearCode Inc.
  * @url https://github.com/clear-code/js-codemodule-search-folder-manager
  */
 
@@ -82,7 +82,7 @@ SearchFolderManager.prototype = {
   toArray: function (aEnumerator, aInterface) {
     aInterface = aInterface || Ci.nsISupports;
     var array = [];
-    if (aEnumerator instanceof Ci.nsISupportsArray) {
+    if (Ci.nsISupportsArray && aEnumerator instanceof Ci.nsISupportsArray) {
       let count = aEnumerator.Count();
       for (let i = 0; i < count; i++) {
         array.push(aEnumerator.QueryElementAt(i, aInterface));
