@@ -166,14 +166,14 @@ pref("extensions.typical-reply@clear-code.com.buttons", "accept,reject,like,awes
 ### "Report as abuse" button
 
 ```javascript
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.label",          "Report as Abuse Mail");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.accesskey",      "R");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.subjectPrefix",  "[[Abuse]]");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.subject",        "");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.body",           "This is an abuse mail.");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.recipients",     "report-abuse@example.com");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.quoteType",      "no");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.forwardType",    "attachment");
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.separate",       true);
-lockPref("extensions.typical-reply@clear-code.com.reply.abuse.allowedDomains", "*");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.label",          "Report as Abuse Mail");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.accesskey",      "R");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.subjectPrefix",  "[[Abuse]]");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.subject",        "");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.body",           "This is an abuse mail.");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.recipients",     "report-abuse@example.com");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.quoteType",      "no");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.forwardType",    "attachment");
+pref("extensions.typical-reply@clear-code.com.reply.abuse.separate",       true);
+pref("extensions.typical-reply@clear-code.com.reply.abuse.allowedDomains", "*");
 ```
