@@ -68,7 +68,10 @@ const TypicalReplyCompose = {
   applyBody(aDefinition) {
     const editor = gMsgCompose.editor;
     if (aDefinition.body) {
-      editor.insertText(aDefinition.body);
+      if (typeof editor.insertText == 'function')
+        editor.insertText(aDefinition.body);
+      else
+        editor.insertNode(editor.document.createTextNode(aDefinition.body), editor.document.body, 0);
       this.log('applyBody: insertText ', aDefinition.body);
     }
     if (aDefinition.bodyImage &&
