@@ -2,18 +2,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var TypicalReplyButtons = {
+const TypicalReplyButtons = {
   get utils() {
     delete this.utils;
     let { TypicalReply } = Components.utils.import('resource://typical-reply-modules/TypicalReply.jsm', {});
     return this.utils = TypicalReply;
   },
 
-  onCommand: function(aEvent) {
-    var target = aEvent.target;
-    var type = target.getAttribute('data-type');
+  onCommand(aEvent) {
+    const target = aEvent.target;
+    const type = target.getAttribute('data-type');
 
-    var definition = this.utils.getDefinition(type);
+    const definition = this.utils.getDefinition(type);
 
     if (definition.alwaysQuote)
       this.utils.quote = true;
@@ -47,20 +47,20 @@ var TypicalReplyButtons = {
 
   toolbarItemIDs: [],
 
-  buildUI: function() {
-    var buttons = document.createDocumentFragment();
+  buildUI() {
+    const buttons = document.createDocumentFragment();
     this.utils.definitions.forEach(function(aDefinition) {
       if (!aDefinition.separate)
         return;
 
-      var button = this.buildActionButton(aDefinition);
+      const button = this.buildActionButton(aDefinition);
       this.toolbarItemIDs.push(button.getAttribute('id'));
       button.setAttribute('removable', true);
       buttons.appendChild(button);
     }, this);
     this.palette.insertBefore(buttons, this.container);
 
-    var menupopupChildren = document.createDocumentFragment();
+    const menupopupChildren = document.createDocumentFragment();
     this.utils.definitions.forEach(function(aDefinition, aIndex) {
       if (aDefinition.separate)
         return;
@@ -76,8 +76,8 @@ var TypicalReplyButtons = {
 
     this.toolbarItemIDs.push(this.container.getAttribute('id'));
   },
-  buildActionButton: function(aDefinition) {
-    var button = document.createElement('toolbarbutton');
+  buildActionButton(aDefinition) {
+    const button = document.createElement('toolbarbutton');
     button.setAttribute('id', 'typicalReply-button-' + aDefinition.type);
     if (aDefinition.icon) {
       button.setAttribute('class', 'toolbarbutton-1 msgHeaderView-button');
@@ -100,9 +100,9 @@ var TypicalReplyButtons = {
     }
     return button;
   },
-  buildActionItems: function(aDefinition) {
-    var fragment = document.createDocumentFragment();
-    var item = document.createElement('menuitem');
+  buildActionItems(aDefinition) {
+    const fragment = document.createDocumentFragment();
+    const item = document.createElement('menuitem');
     if (aDefinition.icon) {
       item.setAttribute('class', 'menuitem-iconic');
       item.setAttribute('image', aDefinition.icon);
@@ -124,7 +124,7 @@ var TypicalReplyButtons = {
     return fragment;
   },
 
-  installToolbarButtons: function() {
+  installToolbarButtons() {
     const extraItems = this.toolbarItemIDs.join(',');
     const toolbar = this.toolbar;
     const matcher = /\b(hdrReplyToSenderButton,hdrSmartReplyButton|hdrReplyToSenderButton|hdrSmartReplyButton|hdrForwardButton)\b/;
@@ -154,12 +154,12 @@ var TypicalReplyButtons = {
     Services.prefs.setBoolPref('extensions.typical-reply@clear-code.com.buttons.installed', true);
   },
 
-  migrate: function() {
-    var version = this.utils.lastConfigVersion;
+  migrate() {
+    const version = this.utils.lastConfigVersion;
     if (version >= this.utils.CONFIG_VERSION)
       return;
 
-    var toolbar = this.toolbar;
+    const toolbar = this.toolbar;
     if (version == 0) {
       let currentSet = toolbar.currentSet;
       let itemInserted = false;

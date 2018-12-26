@@ -4,12 +4,12 @@
 
 var EXPORTED_SYMBOLS = ['TypicalReply'];
 
-var Cc = Components.classes;
-var Ci = Components.interfaces;
-var Cu = Components.utils;
-var Cr = Components.results;
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
+const Cr = Components.results;
 
-var AccountManager = Cc['@mozilla.org/messenger/account-manager;1']
+const AccountManager = Cc['@mozilla.org/messenger/account-manager;1']
                        .getService(Ci.nsIMsgAccountManager);
 
 Cu.import('resource://typical-reply-modules/SearchFolderManager.jsm');
@@ -42,12 +42,12 @@ var TypicalReply = {
   },
 
   extractAddresses: function(aMIMEFieldValue) {
-    var MimeHeaderParser = Cc['@mozilla.org/messenger/headerparser;1']
+    const MimeHeaderParser = Cc['@mozilla.org/messenger/headerparser;1']
                              .getService(Ci.nsIMsgHeaderParser);
-    var addresses = {};
-    var names = {};
-    var fullNames = {};
-    var numAddresses = MimeHeaderParser.parseHeadersWithArray(
+    const addresses = {};
+    const names = {};
+    const fullNames = {};
+    const numAddresses = MimeHeaderParser.parseHeadersWithArray(
                          aMIMEFieldValue, addresses, names, fullNames);
     return addresses.value;
   },
@@ -77,7 +77,7 @@ var TypicalReply = {
 
   get definitions() {
     delete this.definitions;
-    var base = this.BASE + 'reply';
+    const base = this.BASE + 'reply';
     this.definitions = this.prefs.getPref(this.BASE + 'buttons').split(/(?:\s*,\s*|\s+)/).map(function(aType) {
       return this.getDefinition(aType);
     }, this);
@@ -93,7 +93,7 @@ var TypicalReply = {
   },
   get subjectDetector() {
     delete this.subjectDetector;
-    var subjectPatterns = []
+    const subjectPatterns = []
     this.definitions.forEach(function(aDefinition) {
       if (aDefinition.subjectPrefix)
         subjectPatterns.push(this.sanitizeForRegExp(aDefinition.subjectPrefix));
@@ -103,17 +103,17 @@ var TypicalReply = {
     this.subjectDetector = new RegExp('^(' + subjectPatterns.join('|') +  ')');
     return this.subjectDetector;
   },
-  sanitizeForRegExp: function(aString) {
+  sanitizeForRegExp(aString) {
     return aString.replace(/([\.\+\*\?\:\[\]\\^\$\#\%\{\}\|\&])/g, '\\$1');
   },
 
-  checkAllowedForRecipients: function(aRecipients, aAllowedDomains) {
+  checkAllowedForRecipients(aRecipients, aAllowedDomains) {
     if (aAllowedDomains == '' || aAllowedDomains == '*')
       return true;
 
     aAllowedDomains = aAllowedDomains.split(/\s*,\s*/);
     return aRecipients.every(function(aRecipient) {
-      var addresses = this.extractAddresses(aRecipient);
+      const addresses = this.extractAddresses(aRecipient);
       return addresses.every(function(aAddress) {
         return aAllowedDomains.some(function(aDomain) {
           return aAddress.indexOf('@' + aDomain) > 0;
@@ -122,8 +122,8 @@ var TypicalReply = {
     }, this);
   },
 
-  getDefinition: function(aType) {
-    var base = this.BASE + 'reply.' + aType + '.';
+  getDefinition(aType) {
+    const base = this.BASE + 'reply.' + aType + '.';
     return {
       type:          aType,
       label:         this.prefs.getLocalizedPref(base + 'label'),

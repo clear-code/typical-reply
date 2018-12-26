@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var TypicalReplyCompose = {
+const TypicalReplyCompose = {
   log(...args) {
     if (!Services.prefs.getBoolPref('extensions.typical-reply@clear-code.com.debug'))
       return;
@@ -15,23 +15,23 @@ var TypicalReplyCompose = {
     return this.utils = TypicalReply;
   },
 
-  init: function() {
+  async init() {
     this.log('init: type = ', this.utils.type);
     if (!this.utils.type)
       return;
 
-    var editor = gMsgCompose.editor;
+    const editor = gMsgCompose.editor;
     editor.enableUndo(false);
     editor.suppressDispatchingInputEvent = true;
 
-    var quote = this.utils.quote;
+    const quote = this.utils.quote;
     this.log('init: quote = ', quote);
     if (!quote) {
       editor.selectAll();
       editor.deleteSelection(1, 0);
     }
 
-    var definition = this.utils.getDefinition(this.utils.type);
+    const definition = this.utils.getDefinition(this.utils.type);
     this.log('init: definition = ', definition);
 
     this.applySubject(definition);
@@ -48,8 +48,8 @@ var TypicalReplyCompose = {
     this.checkAllowed(definition);
     this.processAutoSend(definition, quote);
   },
-  applySubject: function(aDefinition) {
-    var subjectField = GetMsgSubjectElement();
+  applySubject(aDefinition) {
+    const subjectField = GetMsgSubjectElement();
     if (aDefinition.subject) {
       subjectField.value = aDefinition.subject;
     }
@@ -58,8 +58,8 @@ var TypicalReplyCompose = {
     }
     this.log('applySubject: ', subjectField.value);
   },
-  applyBody: function(aDefinition) {
-    var editor = gMsgCompose.editor;
+  applyBody(aDefinition) {
+    const editor = gMsgCompose.editor;
     if (aDefinition.body) {
       editor.insertText(aDefinition.body);
       this.log('applyBody: insertText ', aDefinition.body);
@@ -75,7 +75,7 @@ var TypicalReplyCompose = {
       editor.insertElementAtSelection(image, false);
     }
   },
-  applyRecipients: function(aDefinition) {
+  applyRecipients(aDefinition) {
     switch (aDefinition.recipients) {
       case this.utils.RECIPIENTS_BLANK:
         this.log('applyRecipients: blank');
@@ -86,7 +86,7 @@ var TypicalReplyCompose = {
       case this.utils.RECIPIENTS_FORWARD:
         this.log('applyRecipients: forward');
         this.awRecipientItems.forEach(function(aItem) {
-          var chooser = this.getRecipientTypeChooser(aItem);
+          const chooser = this.getRecipientTypeChooser(aItem);
           if (chooser.value == 'addr_to')
             chooser.value = 'addr_cc';
         }, this);
@@ -104,16 +104,16 @@ var TypicalReplyCompose = {
     }
   },
   get awRecipientItems() {
-    var items = document.querySelectorAll('#addressingWidget listitem.addressingWidgetItem');
+    const items = document.querySelectorAll('#addressingWidget listitem.addressingWidgetItem');
     return Array.slice(items, 0);
   },
-  getRecipientTypeChooser: function(aItem) {
+  getRecipientTypeChooser(aItem) {
     return aItem.querySelector('menulist');
   },
-  getRecipientField: function(aItem) {
+  getRecipientField(aItem) {
     return aItem.querySelector('textbox');
   },
-  applyPriority: function(aDefinition) {
+  applyPriority(aDefinition) {
     if (aDefinition.priority) {
       let msgCompFields = gMsgCompose.compFields;
       if (msgCompFields) {
@@ -124,23 +124,23 @@ var TypicalReplyCompose = {
     }
   },
 
-  checkAllowed: function(aDefinition) {
-    var addresses = this.awRecipientItems.map(function(aItem) {
-      var field = this.getRecipientField(aItem);
+  checkAllowed(aDefinition) {
+    const addresses = this.awRecipientItems.map(function(aItem) {
+      const field = this.getRecipientField(aItem);
       return field.value;
     }, this);
 
     if (this.utils.checkAllowedForRecipients(addresses, aDefinition.allowedDomains))
       return;
 
-    var title = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.title');
-    var message = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.message');
+    const title = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.title');
+    const message = this.utils.prefs.getLocalizedPref(this.utils.BASE + 'label.notAllowed.message');
     Services.prompt.alert(window, title, message)
 
     goDoCommand('cmd_close');
   },
 
-  processAutoSend: function(aDefinition, aQuote) {
+  processAutoSend(aDefinition, aQuote) {
     switch (aDefinition.autoSend) {
       case this.utils.AUTO_SEND_NO_QUOTE:
         if (aQuote)
@@ -154,7 +154,7 @@ var TypicalReplyCompose = {
     }
   },
 
-  handleEvent: function(aEvent) {
+  handleEvent(aEvent) {
     switch (aEvent.type) {
       case 'compose-window-init':
         document.documentElement.addEventListener('compose-window-close', this, false);
@@ -175,12 +175,12 @@ var TypicalReplyCompose = {
   },
 
   // nsIMsgComposeStateListener
-  NotifyComposeFieldsReady: function() {},
-  NotifyComposeBodyReady: function() {
+  NotifyComposeFieldsReady() {},
+  NotifyComposeBodyReady() {
     setTimeout(this.init.bind(this), 100);
   },
-  ComposeProcessDone: function() {},
-  SaveInFolderDone: function() {}
+  ComposeProcessDone() {},
+  SaveInFolderDone() {}
 };
 
 document.documentElement.addEventListener('compose-window-init', TypicalReplyCompose, false);
