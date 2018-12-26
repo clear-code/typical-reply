@@ -5,6 +5,15 @@
 <!DOCTYPE overlay SYSTEM "chrome://typical-reply/locale/typical-reply.dtd">
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="./typicalReplyButtons.js" />
+  <menupopup id="mailContext">
+    <menu id="typicalReply-actions-contextMenuItem"
+      insertbefore="mailContext-editAsNew"
+      label="&buttons.label;"
+      tooltiptext="&buttons.tooltiptext;">
+      <menupopup id="typicalReply-contextMenuItem-menupopup"
+        oncommand="TypicalReplyButtons.onCommand(event);"/>
+    </menu>
+  </menupopup>
   <toolbarpalette id="header-view-toolbar-palette">
     <toolbaritem id="typicalReply-buttons-container"
       label="&buttons.label;"

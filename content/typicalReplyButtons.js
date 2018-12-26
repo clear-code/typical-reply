@@ -44,6 +44,7 @@ var TypicalReplyButtons = {
   get palette() {
     return document.getElementById('header-view-toolbar-palette');
   },
+
   get container() {
     return document.getElementById('typicalReply-buttons-container');
   },
@@ -54,9 +55,69 @@ var TypicalReplyButtons = {
     return document.getElementById('typicalReply-menupopup');
   },
 
+  get contextMenuItem() {
+    return document.getElementById('typicalReply-actions-contextMenuItem');
+  },
+  get contextMenuItemMenupopup() {
+    return document.getElementById('typicalReply-contextMenuItem-menupopup');
+  },
+
   toolbarItemIDs: [],
 
   buildUI() {
+    this.buildContextMenuItems();
+    this.buildButtons();
+    this.toolbarItemIDs.push(this.container.getAttribute('id'));
+  },
+
+  buildContextMenuItems() {
+    const items = document.createDocumentFragment();
+    this.utils.definitions.forEach(function(aDefinition) {
+      if (!aDefinition.separate)
+        return;
+
+      const item = this.buildMenuItem(aDefinition);
+      items.appendChild(item);
+    }, this);
+    this.contextMenuItem.parentNode.insertBefore(items, this.contextMenuItem);
+
+    const menupopupChildren = document.createDocumentFragment();
+    this.utils.definitions.forEach(function(aDefinition, aIndex) {
+      if (aDefinition.separate)
+        return;
+
+      if (aIndex > 0)
+        menupopupChildren.appendChild(document.createElement('menuseparator'));
+
+      menupopupChildren.appendChild(this.buildActionItems(aDefinition));
+    }, this);
+    this.contextMenuItemMenupopup.appendChild(menupopupChildren);
+    if (!this.contextMenuItemMenupopup.hasChildNodes())
+      this.contextMenuItem.setAttribute('hidden', true);
+  },
+  buildMenuItem(aDefinition) {
+    const item = document.createElement(aDefinition.quoteType ? 'menuitem' : 'menu');
+    item.setAttribute('id', 'typicalReply-menuitem-' + aDefinition.type);
+    if (aDefinition.icon) {
+      item.setAttribute('class', 'menu-iconic');
+      item.setAttribute('image', aDefinition.icon);
+    }
+    item.setAttribute('label', aDefinition.label);
+    item.setAttribute('tooltiptext', aDefinition.label);
+    item.setAttribute('data-type', aDefinition.type);
+    item.setAttribute('oncommand', 'TypicalReplyButtons.onCommand(event);');
+    if (aDefinition.quoteType) {
+      item.setAttribute('data-quote-type', aDefinition.quoteType);
+    }
+    else {
+      let menupopup = document.createElement('menupopup');
+      menupopup.appendChild(this.buildActionItems(aDefinition));
+      item.appendChild(menupopup);
+    }
+    return item;
+  },
+
+  buildButtons() {
     const buttons = document.createDocumentFragment();
     this.utils.definitions.forEach(function(aDefinition) {
       if (!aDefinition.separate)
@@ -82,8 +143,6 @@ var TypicalReplyButtons = {
     this.menupopup.appendChild(menupopupChildren);
     if (!this.menupopup.hasChildNodes())
       this.actionsButton.setAttribute('hidden', true);
-
-    this.toolbarItemIDs.push(this.container.getAttribute('id'));
   },
   buildActionButton(aDefinition) {
     const button = document.createElement('toolbarbutton');
