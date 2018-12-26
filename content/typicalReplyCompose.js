@@ -11,7 +11,7 @@ const TypicalReplyCompose = {
 
   get utils() {
     delete this.utils;
-    let { TypicalReply } = Components.utils.import('resource://typical-reply-modules/TypicalReply.jsm');
+    let { TypicalReply } = Components.utils.import('resource://typical-reply-modules/TypicalReply.jsm', {});
     return this.utils = TypicalReply;
   },
 
