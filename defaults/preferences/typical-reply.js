@@ -4,7 +4,7 @@
 
 pref("extensions.typical-reply@clear-code.com.debug", false);
 pref("extensions.typical-reply@clear-code.com.replying.type", "");
-pref("extensions.typical-reply@clear-code.com.replying.quote", false);
+pref("extensions.typical-reply@clear-code.com.replying.quoteType", "");
 
 pref("extensions.typical-reply@clear-code.com.buttons", "accept,reject,like");
 pref("extensions.typical-reply@clear-code.com.buttons.installed", false);

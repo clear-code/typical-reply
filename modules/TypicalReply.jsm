@@ -61,18 +61,18 @@ var TypicalReply = {
     return aType;
   },
 
-  get quote() {
-    return this.prefs.getPref(this.BASE + 'replying.quote');
+  get quoteType() {
+    return this.prefs.getPref(this.BASE + 'replying.quoteType');
   },
-  set quote(aQuote) {
-    aQuote = Boolean(aQuote);
-    this.prefs.setPref(this.BASE + 'replying.quote', aQuote);
-    return aQuote;
+  set quoteType(quoteType) {
+    quoteType = String(quoteType);
+    this.prefs.setPref(this.BASE + 'replying.quoteType', quoteType);
+    return quoteType;
   },
 
   reset: function() {
     this.type = '';
-    this.quote = false;
+    this.quoteType = '';
   },
 
   get definitions() {
@@ -136,7 +136,8 @@ var TypicalReply = {
       body:          this.prefs.getLocalizedPref(base + 'body'),
       bodyImage:     this.prefs.getLocalizedPref(base + 'bodyImage'),
       recipients:    (this.prefs.getLocalizedPref(base + 'recipients') || '').toLowerCase(),
-      alwaysQuote:   this.prefs.getLocalizedPref(base + 'alwaysQuote'),
+      quoteType:     this.prefs.getLocalizedPref(base + 'quoteType') || (this.prefs.getLocalizedPref(base + 'alwaysQuote') && 'yes' || null),
+      forward:       this.prefs.getLocalizedPref(base + 'forward'),
       priority:      this.prefs.getLocalizedPref(base + 'priority'),
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),

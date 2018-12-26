@@ -25,9 +25,9 @@ const TypicalReplyCompose = {
     editor.enableUndo(false);
     editor.suppressDispatchingInputEvent = true;
 
-    const quote = this.utils.quote;
-    this.log('init: quote = ', quote);
-    if (!quote) {
+    const quoteType = this.utils.quoteType;
+    this.log('init: quoteType = ', quoteType);
+    if (quoteType == 'no') {
       editor.selectAll();
       editor.deleteSelection(1, 0);
     }
@@ -46,7 +46,7 @@ const TypicalReplyCompose = {
 
 
     this.checkAllowed(definition);
-    this.processAutoSend(definition, quote);
+    this.processAutoSend(definition, quoteType);
     }
     catch(error) {
       console.log(error);
@@ -166,10 +166,10 @@ const TypicalReplyCompose = {
     goDoCommand('cmd_close');
   },
 
-  processAutoSend(aDefinition, aQuote) {
+  processAutoSend(aDefinition, aQuoteType) {
     switch (aDefinition.autoSend) {
       case this.utils.AUTO_SEND_NO_QUOTE:
-        if (aQuote)
+        if (aQuoteType == 'yes')
           return;
       case this.utils.AUTO_SEND_ALWAYS:
         goDoCommand('cmd_sendNow');

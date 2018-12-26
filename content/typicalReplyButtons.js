@@ -15,18 +15,23 @@ var TypicalReplyButtons = {
 
     const definition = this.utils.getDefinition(type);
 
-    if (definition.alwaysQuote)
-      this.utils.quote = true;
+    if (definition.quoteType)
+      this.utils.quoteType = definition.quoteType;
     else
-      this.utils.quote = target.getAttribute('data-quote') == 'true';
+      this.utils.quoteType = target.getAttribute('data-quote-type');
 
     this.utils.type = type;
 
-    if (definition.recipients == this.utils.RECIPIENTS_ALL ||
-        definition.recipients == this.utils.RECIPIENTS_FORWARD)
-      MsgReplyToAllMessage(aEvent);
-    else
-      MsgReplySender(aEvent);
+    if (definition.forward || target.getAttribute('data-forward') == 'true') {
+      MsgForwardAsAttachment(aEvent);
+    }
+    else {
+      if (definition.recipients == this.utils.RECIPIENTS_ALL ||
+          definition.recipients == this.utils.RECIPIENTS_FORWARD)
+        MsgReplyToAllMessage(aEvent);
+      else
+        MsgReplySender(aEvent);
+    }
   },
 
   get toolbar() {
@@ -89,8 +94,8 @@ var TypicalReplyButtons = {
     button.setAttribute('tooltiptext', aDefinition.label);
     button.setAttribute('data-type', aDefinition.type);
     button.setAttribute('oncommand', 'TypicalReplyButtons.onCommand(event);');
-    if (aDefinition.alwaysQuote) {
-      button.setAttribute('data-quote', 'true');
+    if (aDefinition.quoteType) {
+      button.setAttribute('data-quote-type', aDefinition.quoteType);
     }
     else {
       button.setAttribute('type', 'menu-button');
@@ -110,15 +115,20 @@ var TypicalReplyButtons = {
     item.setAttribute('label', aDefinition.label);
     item.setAttribute('accesskey', aDefinition.accesskey);
     item.setAttribute('data-type', aDefinition.type);
-    if (aDefinition.alwaysQuote) {
-      item.setAttribute('data-quote', 'true');
+    if (aDefinition.forward)
+      item.setAttribute('data-forward', 'true');
+    if (aDefinition.quoteType) {
+      item.setAttribute('data-quote-type', aDefinition.quoteType);
       fragment.appendChild(item);
     }
     else {
+      item.setAttribute('data-quote-type', 'no');
       fragment.appendChild(item);
       let withQuote = item.cloneNode(true);
       withQuote.setAttribute('label', aDefinition.labelQuote);
-      withQuote.setAttribute('data-quote', 'true');
+      withQuote.setAttribute('data-quote-type', 'yes');
+      if (aDefinition.forward)
+        withQuote.setAttribute('data-forward', 'true');
       fragment.appendChild(withQuote);
     }
     return fragment;
