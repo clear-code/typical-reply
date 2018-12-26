@@ -15,7 +15,7 @@ pref("extensions.typical-reply@clear-code.com.reply.accept.subjectPrefix", "chro
 pref("extensions.typical-reply@clear-code.com.reply.accept.subject", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.accept.body", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.accept.recipients", "all");
-pref("extensions.typical-reply@clear-code.com.reply.accept.alwaysQuote", true);
+pref("extensions.typical-reply@clear-code.com.reply.accept.quoteType", "yes");
 pref("extensions.typical-reply@clear-code.com.reply.accept.priority", "");
 pref("extensions.typical-reply@clear-code.com.reply.accept.separate", false);
 pref("extensions.typical-reply@clear-code.com.reply.accept.searchFolder", false);
@@ -31,7 +31,7 @@ pref("extensions.typical-reply@clear-code.com.reply.reject.subjectPrefix", "chro
 pref("extensions.typical-reply@clear-code.com.reply.reject.subject", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.reject.body", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.reject.recipients", "all");
-pref("extensions.typical-reply@clear-code.com.reply.reject.alwaysQuote", true);
+pref("extensions.typical-reply@clear-code.com.reply.reject.quoteType", "yes");
 pref("extensions.typical-reply@clear-code.com.reply.reject.priority", "");
 pref("extensions.typical-reply@clear-code.com.reply.reject.separate", false);
 pref("extensions.typical-reply@clear-code.com.reply.reject.searchFolder", false);
@@ -47,7 +47,7 @@ pref("extensions.typical-reply@clear-code.com.reply.like.subjectPrefix", "chrome
 pref("extensions.typical-reply@clear-code.com.reply.like.subject", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.like.body", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.like.recipients", "all");
-pref("extensions.typical-reply@clear-code.com.reply.like.alwaysQuote", true);
+pref("extensions.typical-reply@clear-code.com.reply.like.quoteType", "yes");
 pref("extensions.typical-reply@clear-code.com.reply.like.priority", "");
 pref("extensions.typical-reply@clear-code.com.reply.like.separate", true);
 pref("extensions.typical-reply@clear-code.com.reply.like.searchFolder", true);
