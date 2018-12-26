@@ -3,6 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var TypicalReplyCompose = {
+  log(...args) {
+    if (!Services.prefs.getBoolPref('extensions.typical-reply@clear-code.com.debug'))
+      return;
+    console.log('[TypicalReplyCompose] ', ...args);
+  },
+
   get utils() {
     delete this.utils;
     let { TypicalReply } = Components.utils.import('resource://typical-reply-modules/TypicalReply.jsm');
@@ -10,6 +16,7 @@ var TypicalReplyCompose = {
   },
 
   init: function() {
+    this.log('init: type = ', this.utils.type);
     if (!this.utils.type)
       return;
 
@@ -18,12 +25,14 @@ var TypicalReplyCompose = {
     editor.suppressDispatchingInputEvent = true;
 
     var quote = this.utils.quote;
+    this.log('init: quote = ', quote);
     if (!quote) {
       editor.selectAll();
       editor.deleteSelection(1, 0);
     }
 
     var definition = this.utils.getDefinition(this.utils.type);
+    this.log('init: definition = ', definition);
 
     this.applySubject(definition);
     this.applyBody(definition);
@@ -47,11 +56,13 @@ var TypicalReplyCompose = {
     if (aDefinition.subjectPrefix) {
       subjectField.value = aDefinition.subjectPrefix + ': ' + subjectField.value;
     }
+    this.log('applySubject: ', subjectField.value);
   },
   applyBody: function(aDefinition) {
     var editor = gMsgCompose.editor;
     if (aDefinition.body) {
       editor.insertText(aDefinition.body);
+      this.log('applyBody: insertText ', aDefinition.body);
     }
     if (aDefinition.bodyImage &&
         editor instanceof Components.interfaces.nsIHTMLEditor) {
@@ -67,11 +78,13 @@ var TypicalReplyCompose = {
   applyRecipients: function(aDefinition) {
     switch (aDefinition.recipients) {
       case this.utils.RECIPIENTS_BLANK:
+        this.log('applyRecipients: blank');
         awResetAllRows();
         AdjustFocus();
         return;
 
       case this.utils.RECIPIENTS_FORWARD:
+        this.log('applyRecipients: forward');
         this.awRecipientItems.forEach(function(aItem) {
           var chooser = this.getRecipientTypeChooser(aItem);
           if (chooser.value == 'addr_to')
@@ -107,6 +120,7 @@ var TypicalReplyCompose = {
         msgCompFields.priority = aDefinition.priority;
         updatePriorityToolbarButton(aDefinition.priority)
       }
+      this.log('applyPriority: priority = ', aDefinition.priority);
     }
   },
 
