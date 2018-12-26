@@ -6,6 +6,7 @@ pref("extensions.typical-reply@clear-code.com.replying.type", "");
 pref("extensions.typical-reply@clear-code.com.replying.quote", false);
 
 pref("extensions.typical-reply@clear-code.com.buttons", "accept,reject,like");
+pref("extensions.typical-reply@clear-code.com.buttons.installed", false);
 
 pref("extensions.typical-reply@clear-code.com.reply.accept.label", "chrome://typical-reply/locale/typical-reply.properties");
 pref("extensions.typical-reply@clear-code.com.reply.accept.accesskey", "chrome://typical-reply/locale/typical-reply.properties");

@@ -125,14 +125,33 @@ var TypicalReplyButtons = {
   },
 
   installToolbarButtons: function() {
-    var extraItems = this.toolbarItemIDs.join(',');
-    var toolbar = this.toolbar;
-    var matcher = /\b(hdrReplyToSenderButton,hdrSmartReplyButton|hdrReplyToSenderButton|hdrSmartReplyButton|hdrForwardButton)\b/;
-    var defaultset = toolbar.getAttribute('defaultset');
+    const extraItems = this.toolbarItemIDs.join(',');
+    const toolbar = this.toolbar;
+    const matcher = /\b(hdrReplyToSenderButton,hdrSmartReplyButton|hdrReplyToSenderButton|hdrSmartReplyButton|hdrForwardButton)\b/;
+    let defaultset = toolbar.getAttribute('defaultset');
     if (matcher.test(defaultset))
-      toolbar.setAttribute('defaultset', defaultset.replace(matcher, '$1,' + extraItems));
+      defaultset = defaultset.replace(matcher, '$1,' + extraItems);
     else
-      toolbar.setAttribute('defaultset', defaultset + ',' + extraItems);
+      defaultset = defaultset + ',' + extraItems;
+    toolbar.setAttribute('defaultset', defaultset);
+
+    const currentItems = (toolbar.currentSet || '').split(',');
+    if (Services.prefs.getBoolPref('extensions.typical-reply@clear-code.com.buttons.installed') ||
+        this.toolbarItemIDs.some(id => currentItems.includes(id)))
+      return;
+
+    let currentSet = toolbar.currentSet;
+    if (!currentSet || currentSet == '__empty') {
+      currentSet = defaultset;
+    }
+    else {
+      if (matcher.test(currentSet))
+        currentSet = currentSet.replace(matcher, '$1,' + extraItems);
+      else
+        currentSet = currentSet + ',' + extraItems;
+    }
+    toolbar.setAttribute('currentset',  toolbar.currentSet = currentSet);
+    Services.prefs.setBoolPref('extensions.typical-reply@clear-code.com.buttons.installed', true);
   },
 
   migrate: function() {
