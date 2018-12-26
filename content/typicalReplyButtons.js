@@ -22,8 +22,12 @@ var TypicalReplyButtons = {
 
     this.utils.type = type;
 
-    if (definition.forward || target.getAttribute('data-forward') == 'true') {
+    const forwardType = definition.forwardType || target.getAttribute('data-forward-type');
+    if (forwardType == 'attachment') {
       MsgForwardAsAttachment(aEvent);
+    }
+    else if (forwardType == 'inline') {
+      MsgForwardAsInline(aEvent);
     }
     else {
       if (definition.recipients == this.utils.RECIPIENTS_ALL ||
@@ -115,8 +119,8 @@ var TypicalReplyButtons = {
     item.setAttribute('label', aDefinition.label);
     item.setAttribute('accesskey', aDefinition.accesskey);
     item.setAttribute('data-type', aDefinition.type);
-    if (aDefinition.forward)
-      item.setAttribute('data-forward', 'true');
+    if (aDefinition.forwardType)
+      item.setAttribute('data-forward-type', aDefinition.forwardType);
     if (aDefinition.quoteType) {
       item.setAttribute('data-quote-type', aDefinition.quoteType);
       fragment.appendChild(item);
@@ -127,8 +131,8 @@ var TypicalReplyButtons = {
       let withQuote = item.cloneNode(true);
       withQuote.setAttribute('label', aDefinition.labelQuote);
       withQuote.setAttribute('data-quote-type', 'yes');
-      if (aDefinition.forward)
-        withQuote.setAttribute('data-forward', 'true');
+      if (aDefinition.forwardType)
+        withQuote.setAttribute('data-forward-type', aDefinition.forwardType);
       fragment.appendChild(withQuote);
     }
     return fragment;

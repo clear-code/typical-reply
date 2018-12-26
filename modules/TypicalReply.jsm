@@ -137,7 +137,7 @@ var TypicalReply = {
       bodyImage:     this.prefs.getLocalizedPref(base + 'bodyImage'),
       recipients:    (this.prefs.getLocalizedPref(base + 'recipients') || '').toLowerCase(),
       quoteType:     this.prefs.getLocalizedPref(base + 'quoteType') || (this.prefs.getLocalizedPref(base + 'alwaysQuote') && 'yes' || null),
-      forward:       this.prefs.getLocalizedPref(base + 'forward'),
+      forwardType:   this.prefs.getLocalizedPref(base + 'forwardType'),
       priority:      this.prefs.getLocalizedPref(base + 'priority'),
       separate:      this.prefs.getLocalizedPref(base + 'separate'),
       searchFolder:  this.prefs.getLocalizedPref(base + 'searchFolder'),
