@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-const TypicalReplyButtons = {
+var TypicalReplyButtons = {
   get utils() {
     delete this.utils;
     let { TypicalReply } = Components.utils.import('resource://typical-reply-modules/TypicalReply.jsm', {});
