@@ -89,7 +89,7 @@ const TypicalReplyCompose = {
     switch (aDefinition.recipients) {
       case this.utils.RECIPIENTS_BLANK:
         this.log('applyRecipients: blank');
-        awResetAllRows();
+        awCleanupRows();
         AdjustFocus();
         return;
 
@@ -110,11 +110,27 @@ const TypicalReplyCompose = {
         return;
 
       default:
+        this.log('applyRecipients: default');
+        if (/[^@]+@[^@]+/.test(aDefinition.recipients)) {
+          this.log('applyRecipients: => specific recipients');
+          awCleanupRows();
+          AdjustFocus();
+          let first = true;
+          for (const recipient of aDefinition.recipients.split(',')) {
+            this.log('applyRecipients: recipient = ', recipient);
+            if (!first)
+              awAppendNewRow(true);
+            const items = this.awRecipientItems;
+            const field = this.getRecipientField(items[items.length-1]);
+            field.value = recipient;
+            first = false;
+          }
+        }
         return;
     }
   },
   get awRecipientItems() {
-    const items = document.querySelectorAll('#addressingWidget listitem.addressingWidgetItem');
+    const items = document.querySelectorAll('#addressingWidget .addressingWidgetItem');
     return Array.slice(items, 0);
   },
   getRecipientTypeChooser(aItem) {
