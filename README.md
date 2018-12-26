@@ -67,39 +67,47 @@ For example, assume that you are going to add a new "Awesome!" button.
     * `all`: Same to "Reply to All". The reply inherits To, Cc, and Bcc from the original mail.
     * `sender`: Same to "Reply to Sender". The reply will be sent to the author of the original mail.
     * `blank`: The list of recipients will become blank completely.
+    * Comma-separated E-mail addresses
     
     For example:
      
         pref("extensions.typical-reply@clear-code.com.reply.awesome.recipients", "all");
     
- 6. Define quotation behavior.
+ 6. Define forwarding behavior.
      
-        pref("extensions.typical-reply@clear-code.com.reply.awesome.alwaysQuote", false);
+        pref("extensions.typical-reply@clear-code.com.reply.awesome.forwardType", "attachment");
     
-    If you set it to `false`, the button for the type will have two choices: "reply without quote" and "reply with quote".
- 7. Define the priority.
+    Acceptable values are `"attachment"` (always forward as an attachment) or `"inline"` (always forward inline). In these cases you need to specify E-mail addresses via the `recipients` parameter previously described, in other words both `all` and `sender` are ignored.
+    
+    If you want to send a reply from the button, don't specify any value for this parameter.
+ 7. Define quotation behavior.
+     
+        pref("extensions.typical-reply@clear-code.com.reply.awesome.quoteType", "yes");
+    
+    Acceptable values are `"yes"` (always quote body) or `"no"` (never qupte body). Otherwise the button for the type will have two choices: "reply without quote" and "reply with quote".
+ 8. Define the priority.
     Possible values are `Highest`, `High`, `Normal`, `Low` and `Lowest`.
      
         pref("extensions.typical-reply@clear-code.com.reply.awesome.priority", "Highest");
     
- 8. Define button type.
+ 9. Define button type.
     
         pref("extensions.typical-reply@clear-code.com.reply.awesome.separate", false);
     
     If you choose `true`, a new toolbar button for the reply type is generated in the header area.
     Otherwise menu items for the reply type is generated in the menu item of the "Tipycal Reply" button.
- 9. Define behavior of the virtual folder.
+ 10. Define behavior of the virtual folder.
+     
+         pref("extensions.typical-reply@clear-code.com.reply.awesome.searchFolder",  true);
+         pref("extensions.typical-reply@clear-code.com.reply.awesome.searchTargets", "all");
     
-        pref("extensions.typical-reply@clear-code.com.reply.awesome.searchFolder",  true);
-        pref("extensions.typical-reply@clear-code.com.reply.awesome.searchTargets", "all");
-    
-    If you set `searchFolder` to `true`, this addon automatically generates a virutal folder for the type, in all accounts.
-    You can customize list of folders which via the preference item `searchTargets`.
-    
-    * `all`: Finds all typical reply messages from all folders of the account.
-    * `inbox`: Finxs typical reply messges only from the inbox.
-    
- 10. Define allowed recipient domains.
+     If you set `searchFolder` to `true`, this addon automatically generates a virutal folder for the type, in all accounts.
+     You can customize list of folders which via the preference item `searchTargets`.
+     
+     * `all`: Finds all typical reply messages from all folders of the account.
+     * `inbox`: Finxs typical reply messges only from the inbox.
+     
+ 11. Define allowed recipient domains.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "*");
      
@@ -110,7 +118,7 @@ For example, assume that you are going to add a new "Awesome!" button.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "example.com, example.jp");
      
- 11. Define behaviour of auto-send.
+ 12. Define behaviour of auto-send.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.autoSend", "noquote");
      
@@ -118,7 +126,7 @@ For example, assume that you are going to add a new "Awesome!" button.
      without confirmation. If you set it to `noquote`, then typical replies are sent automatically
      only when there is no quotation in the body. Otherwise, you have to click the "Send" button
      manually.
- 12. Define images for the type.
+ 13. Define images for the type.
      You can specify images as an URI.
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",      "data:image/png,...");
