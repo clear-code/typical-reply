@@ -20,6 +20,7 @@ const TypicalReplyCompose = {
     if (!this.utils.type)
       return;
 
+    try {
     const editor = gMsgCompose.editor;
     editor.enableUndo(false);
     editor.suppressDispatchingInputEvent = true;
@@ -43,10 +44,16 @@ const TypicalReplyCompose = {
     editor.suppressDispatchingInputEvent = false;
     editor.enableUndo(true);
 
-    this.utils.reset();
 
     this.checkAllowed(definition);
     this.processAutoSend(definition, quote);
+    }
+    catch(error) {
+      console.log(error);
+    }
+    finally {
+      this.utils.reset();
+    }
   },
   applySubject(aDefinition) {
     const subjectField = GetMsgSubjectElement();
