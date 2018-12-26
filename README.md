@@ -13,7 +13,7 @@ For example, if you are reading a mail like:
       http://...
 
 Then you can send a typical reply quickly.
-If you click the "Like!" button, a reply like follogin will be sent:
+If you click the "Like!" button (or choose "Like!" item from the context menu on the thread pane), a reply like follogin will be sent:
 
     Subject:
       [[Like!]]: Re: How about this?
