@@ -144,7 +144,8 @@ pref("extensions.typical-reply@clear-code.com.reply.awesome.subjectPrefix", "[[!
 pref("extensions.typical-reply@clear-code.com.reply.awesome.subject",       "");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.body",          "Awesome!");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.recipients",    "all");
-pref("extensions.typical-reply@clear-code.com.reply.awesome.alwaysQuote",   false);
+pref("extensions.typical-reply@clear-code.com.reply.awesome.forwardType",   "");
+pref("extensions.typical-reply@clear-code.com.reply.awesome.quoteType",     "");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.priority",      "");
 pref("extensions.typical-reply@clear-code.com.reply.awesome.separate",      false);
 pref("extensions.typical-reply@clear-code.com.reply.awesome.searchFolder",  true);
