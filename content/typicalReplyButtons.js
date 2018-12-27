@@ -103,6 +103,7 @@ var TypicalReplyButtons = {
       item.setAttribute('image', aDefinition.icon);
     }
     item.setAttribute('label', aDefinition.label);
+    item.setAttribute('accesskey', aDefinition.accesskey);
     item.setAttribute('tooltiptext', aDefinition.label);
     item.setAttribute('data-type', aDefinition.type);
     item.setAttribute('oncommand', 'TypicalReplyButtons.onCommand(event);');
