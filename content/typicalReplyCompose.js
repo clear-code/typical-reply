@@ -68,19 +68,30 @@ const TypicalReplyCompose = {
   applyBody(aDefinition) {
     const editor = gMsgCompose.editor;
     if (aDefinition.body) {
-      if (typeof editor.insertText == 'function')
+      if (typeof editor.insertText == 'function') {
         editor.insertText(aDefinition.body);
-      else
-        editor.insertNode(editor.document.createTextNode(aDefinition.body), editor.document.body, 0);
+      }
+      else {
+        const lines = aDefinition.body.split('\n');
+        let fragment = editor.document.createDocumentFragment();
+        for (let i = 0, maxi = lines.length; i < maxi; i++) {
+          if (i > 0) {
+            let lineBreak = editor.createElementWithDefaults ? editor.createElementWithDefaults('br') : editor.document.createElement('br');
+            fragment.appendChild(lineBreak);
+          }
+          fragment.appendChild(editor.document.createTextNode(lines[i]));
+        }
+        editor.insertNode(fragment, editor.document.body, 0);
+      }
       this.log('applyBody: insertText ', aDefinition.body);
     }
     if (aDefinition.bodyImage &&
         editor instanceof Components.interfaces.nsIHTMLEditor) {
       if (aDefinition.body) {
-        let lineBreak = editor.createElementWithDefaults('br');
+        let lineBreak = editor.createElementWithDefaults ? editor.createElementWithDefaults('br') : editor.document.createElement('br');
         editor.insertElementAtSelection(lineBreak, false);
       }
-      let image = editor.createElementWithDefaults('img');
+      let image = editor.createElementWithDefaults ? editor.createElementWithDefaults('img') : editor.document.createElement('img');
       image.setAttribute('src', aDefinition.bodyImage);
       editor.insertElementAtSelection(image, false);
     }
