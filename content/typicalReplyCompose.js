@@ -40,11 +40,13 @@ const TypicalReplyCompose = {
     this.applyRecipients(definition);
     this.applyPriority(definition);
 
+    this.log('init: initialize editor');
     editor.resetModificationCount();
     editor.suppressDispatchingInputEvent = false;
     editor.enableUndo(true);
 
 
+    this.log('init: check autosend');
     this.checkAllowed(definition);
     this.processAutoSend(definition, quoteType);
     }
@@ -52,6 +54,7 @@ const TypicalReplyCompose = {
       console.log(error);
     }
     finally {
+      this.log('init: finish');
       this.utils.reset();
     }
   },
