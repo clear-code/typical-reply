@@ -45,6 +45,7 @@ const TypicalReplyCompose = {
     editor.suppressDispatchingInputEvent = false;
     editor.enableUndo(true);
 
+    updateSendCommands(true);
 
     this.log('init: check autosend');
     this.checkAllowed(definition);
