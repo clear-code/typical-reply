@@ -87,6 +87,8 @@ const TypicalReplyCompose = {
         }
         editor.insertNode(fragment, editor.document.body, 0);
       }
+      gMsgCompose.bodyModified = true;
+      gContentChanged = true;
       this.log('applyBody: insertText ', aDefinition.body);
     }
     if (aDefinition.bodyImage &&
@@ -98,6 +100,8 @@ const TypicalReplyCompose = {
       let image = editor.createElementWithDefaults ? editor.createElementWithDefaults('img') : editor.document.createElement('img');
       image.setAttribute('src', aDefinition.bodyImage);
       editor.insertElementAtSelection(image, false);
+      gMsgCompose.bodyModified = true;
+      gContentChanged = true;
     }
   },
   applyRecipients(aDefinition) {
