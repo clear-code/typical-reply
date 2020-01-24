@@ -23,7 +23,6 @@ const TypicalReplyCompose = {
     try {
     const editor = gMsgCompose.editor;
     editor.enableUndo(false);
-    editor.suppressDispatchingInputEvent = true;
 
     const quoteType = this.utils.quoteType;
     this.log('init: quoteType = ', quoteType);
@@ -42,7 +41,6 @@ const TypicalReplyCompose = {
 
     this.log('init: initialize editor');
     editor.resetModificationCount();
-    editor.suppressDispatchingInputEvent = false;
     editor.enableUndo(true);
 
     updateSendCommands(true);
