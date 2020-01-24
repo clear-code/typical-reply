@@ -266,7 +266,14 @@ SearchFolderManager.prototype = {
       virtualFolder.msgDatabase.Close(true);
       aRoot.NotifyItemAdded(virtualFolder);
     }
-    MailServices.accounts.saveVirtualFolders();
+    try {
+      MailServices.accounts.saveVirtualFolders();
+    }
+    catch(e) {
+      // it raises the error but works as expected, so we simply ignore.
+      if (!String(e).includes('File error: Not found'))
+        throw e;
+    }
   },
   getSearchFolders: function(aRoot, aKeys) {
     var flags = {};
