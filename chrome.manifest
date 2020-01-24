@@ -8,7 +8,7 @@ locale	typical-reply	ja	locale/ja/
 
 overlay	chrome://messenger/content/messenger.xul	chrome://typical-reply/content/columnOverlay.xul
 
-overlay	chrome://messenger/content/msgHdrViewOverlay.xul	chrome://typical-reply/content/typicalReplyButtons.xul
+overlay	chrome://messenger/content/messenger.xul	chrome://typical-reply/content/typicalReplyButtons.xul
 overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://typical-reply/content/typicalReplyCompose.xul
 
 resource typical-reply-modules modules/
