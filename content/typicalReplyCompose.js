@@ -148,7 +148,7 @@ const TypicalReplyCompose = {
   },
   get awRecipientItems() {
     const items = document.querySelectorAll('#addressingWidget .addressingWidgetItem');
-    return Array.slice(items, 0);
+    return Array.from(items);
   },
   getRecipientTypeChooser(aItem) {
     return aItem.querySelector('menulist');
