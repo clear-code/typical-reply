@@ -38,21 +38,25 @@ var TypicalReplyButtons = {
     }
   },
 
+  get bundle() {
+    return document.getElementById('typicalReply-bundle');
+  },
+
   get toolbar() {
     return document.getElementById('header-view-toolbar');
   },
   get palette() {
-    return document.getElementById('header-view-toolbar-palette');
+    return document.getElementById('header-view-toolbar-palette') || this.toolbar.parentNode.palette;
   },
 
   get container() {
-    return document.getElementById('typicalReply-buttons-container');
+    return document.getElementById('typicalReply-buttons-container') || this.palette.querySelector('#typicalReply-buttons-container');
   },
   get actionsButton() {
-    return document.getElementById('typicalReply-actions-button');
+    return document.getElementById('typicalReply-actions-button') || this.palette.querySelector('#typicalReply-actions-button');
   },
   get menupopup() {
-    return document.getElementById('typicalReply-menupopup');
+    return document.getElementById('typicalReply-menupopup') || this.palette.querySelector('#typicalReply-menupopup');
   },
 
   get contextMenuItem() {
@@ -119,6 +123,23 @@ var TypicalReplyButtons = {
   },
 
   buildButtons() {
+    const container = document.createXULElement('toolbaritem');
+    container.setAttribute('id', 'typicalReply-buttons-container');
+    container.setAttribute('label', this.bundle.getString('buttons.label'));
+    container.setAttribute('tooltiptext', this.bundle.getString('buttons.tooltiptext'));
+    container.setAttribute('removable', 'true');
+    const button = container.appendChild(document.createXULElement('toolbarbutton'));
+    button.setAttribute('id', 'typicalReply-actions-button');
+    button.setAttribute('type', 'menu');
+    button.setAttribute('class', 'toolbarbutton-1 msgHeaderView-button hdrReplyButton');
+    button.setAttribute('label', this.bundle.getString('button.actions.label'));
+    button.setAttribute('tooltiptext', this.bundle.getString('button.actions.tooltiptext'));
+    button.setAttribute('removable', 'true');
+    const popup = button.appendChild(document.createXULElement('menupopup'));
+    popup.setAttribute('id', 'typicalReply-menupopup');
+    popup.setAttribute('oncommand', 'TypicalReplyButtons.onCommand(event);');
+    this.palette.appendChild(container);
+
     const buttons = document.createDocumentFragment();
     this.utils.definitions.forEach(function(aDefinition) {
       if (!aDefinition.separate)
@@ -137,7 +158,7 @@ var TypicalReplyButtons = {
         return;
 
       if (aIndex > 0)
-        menupopupChildren.appendChild(document.createElement('menuseparator'));
+        menupopupChildren.appendChild(document.createXULElement('menuseparator'));
 
       menupopupChildren.appendChild(this.buildActionItems(aDefinition));
     }, this);
@@ -146,7 +167,7 @@ var TypicalReplyButtons = {
       this.actionsButton.setAttribute('hidden', true);
   },
   buildActionButton(aDefinition) {
-    const button = document.createElement('toolbarbutton');
+    const button = document.createXULElement('toolbarbutton');
     button.setAttribute('id', 'typicalReply-button-' + aDefinition.type);
     if (aDefinition.icon) {
       button.setAttribute('class', 'toolbarbutton-1 msgHeaderView-button');
@@ -163,7 +184,7 @@ var TypicalReplyButtons = {
     }
     else {
       button.setAttribute('type', 'menu-button');
-      let menupopup = document.createElement('menupopup');
+      let menupopup = document.createXULElement('menupopup');
       menupopup.appendChild(this.buildActionItems(aDefinition));
       button.appendChild(menupopup);
     }
@@ -171,7 +192,7 @@ var TypicalReplyButtons = {
   },
   buildActionItems(aDefinition) {
     const fragment = document.createDocumentFragment();
-    const item = document.createElement('menuitem');
+    const item = document.createXULElement('menuitem');
     if (aDefinition.icon) {
       item.setAttribute('class', 'menuitem-iconic');
       item.setAttribute('image', aDefinition.icon);
