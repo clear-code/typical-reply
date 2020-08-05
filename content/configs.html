@@ -1,13 +1,72 @@
-<?xml version="1.0"?>
+<!DOCTYPE html>
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <html>
   <head>
     <script type="application/javascript" src="./configs.js"></script>
+    <link rel="stylesheet" href="configs.css">
   </head>
   <body>
     <ul id="definitions"></ul>
-    <button id="addItem"></button>
+    <button id="add-item-button"></button>
+    <div id="edit-dialog-container">
+      <div id="edit-dialog" class="dialog">
+        <div class="dialog-contents">
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="label"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="accesskey"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="subjectPrefix"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="subject"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="body"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="bodyImage"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="recipients"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="quoteType"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="forwardType"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="priority"></label></div>
+          <div><label><input type="checkbox"
+                             data-field="separate">
+                      <span class="label-text"></span></label></div>
+          <div><label><input type="checkbox"
+                             data-field="searchFolder">
+                      <span class="label-text"></span></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="searchTargets"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="allowedDomains"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="autoSend"></label></div>
+          <div><label><span class="label-text"></span>
+                      <input type="text"
+                             data-field="icon"></label></div>
+        </div>
+        <div class="dialog-buttons">
+          <button id="edit-save-button"></button>
+          <button id="edit-cancel-button"></button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

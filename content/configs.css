@@ -1,0 +1,46 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+#edit-dialog-container {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: opacity ease-in 0.15s;
+  z-index: 1000;
+}
+
+#edit-dialog-container.shown {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+.dialog {
+  background: -moz-dialog;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+}
+
+.dialog-contents {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: around;
+  margin-top: 0.5em;
+}
