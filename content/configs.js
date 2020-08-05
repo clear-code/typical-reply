@@ -104,7 +104,6 @@ function definitionToListItem(definition) {
   return `
     <li id=${JSON.stringify(sanitizeForHTMLText(definition.type))}>
       <label>${sanitizeForHTMLText(definition.label)}</label>
-      <button class="delete"></button>
     </li>
   `.trim();
 }
