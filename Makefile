@@ -6,15 +6,15 @@ all: xpi
 
 xpi: update_extlib install_extlib
 	rm -f ./$(PACKAGE_NAME).xpi
-	zip -r -9 $(PACKAGE_NAME).xpi manifest.json chrome.manifest content defaults extlib locale modules -x '*/.*' >/dev/null 2>/dev/null
+	zip -r -9 $(PACKAGE_NAME).xpi manifest.json chrome.manifest content defaults locale modules -x '*/.*' >/dev/null 2>/dev/null
 
 update_extlib:
 	git submodule update --init
 
 install_extlib:
 	rm -f extlib/*.js
-	cp submodules/webextensions-lib-dom-updater/src/diff.js extlib/
-	cp submodules/webextensions-lib-dom-updater/src/dom-updater.js extlib/
+	cp submodules/webextensions-lib-dom-updater/src/diff.js modules/extlib/
+	cp submodules/webextensions-lib-dom-updater/src/dom-updater.js modules/extlib/
 
 makexpi/makexpi.sh:
 	git submodule update --init
