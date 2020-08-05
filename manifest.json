@@ -11,6 +11,10 @@
   "version": "0.6",
 
   "legacy": {
-    "type": "xul"
+    "type": "xul",
+    "options": {
+      "page": "chrome://typical-reply/content/configs.html",
+      "open_in_tab": true
+    }
   }
 }
