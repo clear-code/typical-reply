@@ -1,3 +1,6 @@
 [submodule "makexpi"]
 	path = makexpi
 	url = https://github.com/piroor/makexpi.git
+[submodule "submodules/webextensions-lib-dom-updater"]
+	path = submodules/webextensions-lib-dom-updater
+	url = https://github.com/piroor/webextensions-lib-dom-updater.git

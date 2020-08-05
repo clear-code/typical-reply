@@ -4,8 +4,17 @@ PACKAGE_NAME = typical-reply
 
 all: xpi
 
-xpi: makexpi/makexpi.sh
-	makexpi/makexpi.sh -n $(PACKAGE_NAME) -o
+xpi: update_extlib install_extlib
+	rm -f ./$(PACKAGE_NAME).xpi
+	zip -r -9 $(PACKAGE_NAME).xpi manifest.json chrome.manifest content defaults extlib locale modules -x '*/.*' >/dev/null 2>/dev/null
+
+update_extlib:
+	git submodule update --init
+
+install_extlib:
+	rm -f extlib/*.js
+	cp submodules/webextensions-lib-dom-updater/src/diff.js extlib/
+	cp submodules/webextensions-lib-dom-updater/src/dom-updater.js extlib/
 
 makexpi/makexpi.sh:
 	git submodule update --init
