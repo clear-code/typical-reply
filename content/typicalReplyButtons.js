@@ -230,12 +230,20 @@ var TypicalReplyButtons = {
       defaultset = defaultset + ',' + extraItems;
     toolbar.setAttribute('defaultset', defaultset);
 
-    const currentItems = (toolbar.currentSet || '').split(',');
-    if (Services.prefs.getBoolPref('extensions.typical-reply@clear-code.com.buttons.installed') ||
-        this.toolbarItemIDs.some(id => currentItems.includes(id)))
-      return;
-
     let currentSet = toolbar.currentSet;
+    const currentItems = (currentSet || '').split(',');
+    if (Services.prefs.getBoolPref('extensions.typical-reply@clear-code.com.buttons.installed') ||
+        this.toolbarItemIDs.some(id => currentItems.includes(id))) {
+      const savedCurrentSet = toolbar.getAttribute('currentset');
+      if (savedCurrentSet != currentSet) {
+        // Sometimes the toolbar contents can be restored before extra buttons are generated.
+        // On such case we need to refresh toolbar contents manually.
+        currentSet = toolbar.getAttribute('currentset');
+        toolbar.setAttribute('currentset',  toolbar.currentSet = currentSet);
+      }
+      return;
+    }
+
     if (!currentSet || currentSet == '__empty') {
       currentSet = defaultset;
     }
