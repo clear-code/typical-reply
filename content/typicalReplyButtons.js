@@ -234,12 +234,11 @@ var TypicalReplyButtons = {
     const currentItems = (currentSet || '').split(',');
     if (Services.prefs.getBoolPref('extensions.typical-reply@clear-code.com.buttons.installed') ||
         this.toolbarItemIDs.some(id => currentItems.includes(id))) {
-      const savedCurrentSet = toolbar.getAttribute('currentset');
+      const savedCurrentSet = toolbar.getAttribute('currentset') || defaultset;
       if (savedCurrentSet != currentSet) {
         // Sometimes the toolbar contents can be restored before extra buttons are generated.
         // On such case we need to refresh toolbar contents manually.
-        currentSet = toolbar.getAttribute('currentset');
-        toolbar.setAttribute('currentset',  toolbar.currentSet = currentSet);
+        toolbar.setAttribute('currentset',  toolbar.currentSet = savedCurrentSet);
       }
       return;
     }
