@@ -9,7 +9,7 @@
   },
   "name": "Typical Reply",
   "description": "Provides ability to send/receive typical replies in a team.",
-  "version": "0.6.1",
+  "version": "0.6.2",
 
   "legacy": {
     "type": "xul"
