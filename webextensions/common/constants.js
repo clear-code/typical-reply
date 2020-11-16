@@ -5,4 +5,14 @@
 */
 'use strict';
 
+export const TYPE_COMPOSE_STARTED   = 'compose-started';
 export const TYPE_DO_BUTTON_COMMAND = 'do-button-command';
+
+export const RECIPIENTS_ALL    = 'all';
+export const RECIPIENTS_SENDER = 'sender';
+export const RECIPIENTS_BLANK  = 'blank';
+
+export const QUOTE_ALWAYS = 'yes';
+export const QUOTE_NEVER  = 'no';
+
+export const DOMAIN_ALL  = '*';
