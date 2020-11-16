@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "version": "1.99.0",
+  "author": "ClearCode Inc.",
+  "description": "__MSG_extensionDescription__",
+  "permissions": [
+    "accountsRead",
+    "compose",
+    "messagesRead",
+    "storage"
+  ],
+  "background": {
+    "page": "/background/background.html"
+  },
+  "message_display_action": {
+    "default_icon": "/resources/icon.svg",
+    "default_title": "__MSG_menu_redmine_label__",
+    "default_popup": "/dialog/message-display-action/message-display-action.html"
+  },
+  "default_locale": "en",
+  "applications": {
+    "gecko": {
+      "id": "typical-reply@clear-code.com",
+      "strict_min_version": "78.0"
+    }
+  }
+}
