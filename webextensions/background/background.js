@@ -65,22 +65,23 @@ async function doButtonCommand(id) {
 
   switch (definition.recipients) {
     case Constants.RECIPIENTS_ALL:
-      definition.to = [
+      details.to = [
         message.author,
         ...message.recipients
           .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))];
+      details.cc = message.ccList;
       break;
 
     case Constants.RECIPIENTS_SENDER:
-      definition.to = [message.author];
+      details.to = [message.author];
       break;
 
     case Constants.RECIPIENTS_BLANK:
-      definition.to = [];
+      details.to = [];
       break;
 
     default:
-      definition.to = String(definition.recipients || '').map(address => address.trim()).filter(address => !!address);
+      details.to = String(definition.recipients || '').map(address => address.trim()).filter(address => !!address);
       break;
   }
 
