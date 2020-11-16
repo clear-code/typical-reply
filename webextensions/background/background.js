@@ -18,8 +18,10 @@ browser.runtime.onMessage.addListener((message, sender) => {
     case Constants.TYPE_COMPOSE_STARTED:
       log('TYPE_COMPOSE_STARTED received ', message, sender);
       if (lastComposingResolver)
-        lastComposingResolver(sender.tab.id);
-      lastComposingResolver = null;
+        browser.compose.getComposeDetails(sender.tab.id).then(async details => {
+          lastComposingResolver({ tabId: sender.tab.id, details });
+          lastComposingResolver = null;
+        });
       break;
   }
 });
@@ -51,17 +53,29 @@ async function doButtonCommand(id) {
   const tab     = tabs[0];
   const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
 
+  const composeInfo = await new Promise((resolve, _reject) => {
+    lastComposingResolver = resolve;
+    const detailsOnForward = {
+      body: String(definition.body || '').trim()
+    };
+    console.log('begin forwared ', detailsOnForward);
+    browser.compose.beginForward(message.id, 'forwardAsAttachment', detailsOnForward)
+  });
+
+  // We need to set details after the composition window is opened,
+  // because some details (ex. subject) are ignored for forwarded mails.
+
   const details = {
-    subject: String(definition.subject || '').trim(),
-    body:    String(definition.body || '').trim()
+    subject: String(definition.subject || '').trim()
   };
 
   if (!details.subject &&
       (definition.subjectPrefix || definition.subjectSuffix))
     details.subject = `${definition.subjectPrefix || ''}${message.subject}${definition.subjectSuffix || ''}`.trim();
 
-  const myAddress        = 'myaddress@example.com';
+  const myAddress        = await getAddressFromIdentity(composeInfo.details.identityId);
   const myAddressWrapped = `<${myAddress}>`;
+  log('myAddress ', myAddress);
 
   switch (definition.recipients) {
     case Constants.RECIPIENTS_ALL:
@@ -69,7 +83,7 @@ async function doButtonCommand(id) {
         message.author,
         ...message.recipients
           .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))];
-      details.cc = message.ccList;
+      details.cc = message.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped));
       break;
 
     case Constants.RECIPIENTS_SENDER:
@@ -85,15 +99,17 @@ async function doButtonCommand(id) {
       break;
   }
 
-  console.log('begin forwared ', details);
-
-  const composeTabId = await new Promise((resolve, _reject) => {
-    lastComposingResolver = resolve;
-    browser.compose.beginForward(message.id, 'forwardAsAttachment', details)
-  });
-
-  // We need to set details again because a composition window for a forwarded
-  // message is always started with built-in format subject.
   console.log('set details ', details);
-  browser.compose.setComposeDetails(composeTabId, details);
+  browser.compose.setComposeDetails(composeInfo.tabId, details);
+}
+
+async function getAddressFromIdentity(id) {
+  const accounts = await browser.accounts.list();
+  for (const account of accounts) {
+    for (const identity of account.identities) {
+      if (identity.id == id)
+        return identity.email;
+    }
+  }
+  return null;
 }
