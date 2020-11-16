@@ -16,6 +16,7 @@ export const configs = new Configs({
   buttons: [
     { id:             'accept',
       label:          browser.i18n.getMessage('exampleButton_accept_label'),
+      accesskey:      browser.i18n.getMessage('exampleButton_accept_accesskey'),
       subjectPrefix:  browser.i18n.getMessage('exampleButton_accept_subjectPrefix'),
       subject:        browser.i18n.getMessage('exampleButton_accept_subject'),
       body:           browser.i18n.getMessage('exampleButton_accept_body'),
@@ -27,6 +28,7 @@ export const configs = new Configs({
       icon:           browser.runtime.getURL('/resources/accept.png') },
     { id:             'reject',
       label:          browser.i18n.getMessage('exampleButton_reject_label'),
+      accesskey:      browser.i18n.getMessage('exampleButton_reject_accesskey'),
       subjectPrefix:  browser.i18n.getMessage('exampleButton_reject_subjectPrefix'),
       subject:        browser.i18n.getMessage('exampleButton_reject_subject'),
       body:           browser.i18n.getMessage('exampleButton_reject_body'),
@@ -38,6 +40,7 @@ export const configs = new Configs({
       icon:           browser.runtime.getURL('/resources/reject.png') },
     { id:             'like',
       label:          browser.i18n.getMessage('exampleButton_like_label'),
+      accesskey:      browser.i18n.getMessage('exampleButton_like_accesskey'),
       subjectPrefix:  browser.i18n.getMessage('exampleButton_like_subjectPrefix'),
       subject:        browser.i18n.getMessage('exampleButton_like_subject'),
       body:           browser.i18n.getMessage('exampleButton_like_body'),
@@ -74,4 +77,17 @@ export function log(message, ...args) {
     indent += ' ';
   }
   console.log(`typical-reply: ${indent}${message}`, ...args);
+}
+
+export function appendContents(parent, source) {
+  const range = document.createRange();
+  range.selectNodeContents(parent);
+  range.collapse(false);
+  const fragment = range.createContextualFragment(source.trim());
+  range.insertNode(fragment);
+  range.detach();
+}
+
+export function sanitizeForHTMLText(text) {
+  return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }

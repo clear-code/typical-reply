@@ -5,17 +5,20 @@
   "buttonsLabel": { "message": "Typical Reply" },
   "buttonsTooltipText": { "message": "Send a typical reply" },
 
-  "exampleButton_accept_label":         { "message": "&OK" },
+  "exampleButton_accept_label":         { "message": "OK" },
+  "exampleButton_accept_accesskey":     { "message": "O" },
   "exampleButton_accept_subjectPrefix": { "message": "[[OK]]" },
   "exampleButton_accept_subject":       { "message": " " },
   "exampleButton_accept_body":          { "message": "OK, accepted." },
 
-  "exampleButton_reject_label":         { "message": "&NG" },
+  "exampleButton_reject_label":         { "message": "NG" },
+  "exampleButton_reject_accesskey":     { "message": "N" },
   "exampleButton_reject_subjectPrefix": { "message": "[[NG]]" },
   "exampleButton_reject_subject":       { "message": " " },
   "exampleButton_reject_body":          { "message": "NG, rejected." },
 
-  "exampleButton_like_label":         { "message": "&Like!" },
+  "exampleButton_like_label":         { "message": "Like!" },
+  "exampleButton_like_accesskey":     { "message": "L" },
   "exampleButton_like_subjectPrefix": { "message": "[[Like!]]" },
   "exampleButton_like_subject":       { "message": " " },
   "exampleButton_like_body":          { "message": "Like!" },
