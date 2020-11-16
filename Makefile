@@ -1,11 +1,12 @@
 PACKAGE_NAME = typical-reply
 
-.PHONY: all xpi signed clean
+.PHONY: all xpi signed clean lint
 
 all: xpi
 
 xpi: makexpi/makexpi.sh
 	makexpi/makexpi.sh -n $(PACKAGE_NAME) -o
+	cd webextensions && make && cp ./*.xpi ../
 
 makexpi/makexpi.sh:
 	git submodule update --init
@@ -15,3 +16,6 @@ signed: xpi
 
 clean:
 	rm $(PACKAGE_NAME).xpi $(PACKAGE_NAME)_noupdate.xpi sha1hash.txt
+
+lint:
+	cd webextensions && make lint
