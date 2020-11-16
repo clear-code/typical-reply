@@ -61,7 +61,7 @@ async function doButtonCommand(id) {
     details.subject = `${definition.subjectPrefix || ''}${message.subject}${definition.subjectSuffix || ''}`.trim();
 
   const myAddress        = 'myaddress@example.com';
-  const myAddressWrapped = `<${myaAddress}>`:
+  const myAddressWrapped = `<${myAddress}>`;
 
   switch (definition.recipients) {
     case Constants.RECIPIENTS_ALL:
@@ -93,6 +93,6 @@ async function doButtonCommand(id) {
 
   // We need to set details again because a composition window for a forwarded
   // message is always started with built-in format subject.
-  console.log('set details ' details);
+  console.log('set details ', details);
   browser.compose.setComposeDetails(composeTabId, details);
 }
