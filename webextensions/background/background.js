@@ -121,26 +121,29 @@ async function startTypicalReply(params) {
       (params.subjectPrefix || params.subjectSuffix))
     details.subject = `${params.subjectPrefix || ''}${message.subject}${params.subjectSuffix || ''}`.trim();
 
-  const myAddress        = await getAddressFromIdentity(composeInfo.details.identityId);
-  const myAddressWrapped = `<${myAddress}>`;
-  log('myAddress ', myAddress);
-
   switch (params.recipients) {
     case Constants.RECIPIENTS_ALL:
       if (composeInfo.details.to.length == 0) {
         log(`params.recipients=${params.recipients}: recipients are unexpectedly blank, fallback to custom method`);
-        details.to = [
-          message.author,
-          ...message.recipients
-            .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))];
-        details.cc = message.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped));
+        const { to, cc } = await getRecipients({
+          originalMessage: message,
+          recipientType:   params.recipients,
+          identityId:      composeInfo.details.identityId
+        });
+        details.to = to;
+        details.cc = cc;
       }
       break;
 
     case Constants.RECIPIENTS_SENDER:
       if (composeInfo.details.to.length == 0) {
         log(`params.recipients=${params.recipients}: recipients are unexpectedly blank, fallback to custom method`);
-        details.to = [message.author];
+        const { to } = await getRecipients({
+          originalMessage: message,
+          recipientType:   params.recipients,
+          identityId:      composeInfo.details.identityId
+        });
+        details.to = to;
       }
       break;
 
@@ -197,6 +200,38 @@ async function startTypicalReply(params) {
       range.detach();
     }, 250);`,
   });
+}
+
+async function getRecipients({ originalMessage, recipientType, identityId }) {
+  const myAddress        = await getAddressFromIdentity(identityId);
+  const myAddressWrapped = `<${myAddress}>`;
+  log('myAddress ', myAddress);
+  switch (recipientType) {
+    case Constants.RECIPIENTS_ALL:
+      return {
+        to: [
+          originalMessage.author,
+          ...originalMessage.recipients
+            .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))
+        ],
+        cc: originalMessage.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped)),
+        bcc: []
+      };
+
+    case Constants.RECIPIENTS_SENDER:
+      return {
+        to: [originalMessage.author],
+        cc: [],
+        bcc: []
+      };
+
+    default:
+      return {
+        to: [],
+        cc: [],
+        bcc: []
+      };
+  }
 }
 
 async function getAddressFromIdentity(id) {
