@@ -55,7 +55,9 @@ async function startTypicalReply(params) {
 
   const composeInfo = await new Promise(async (resolve, _reject) => {
     lastComposingResolver = resolve;
-    const details = {};
+    const details = {
+      isPlainText: !params.bodyImage
+    };
     switch (params.forwardType) {
       case 'attachment':
         console.log('begin forwared as attachment ', details);
