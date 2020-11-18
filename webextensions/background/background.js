@@ -12,6 +12,8 @@ import {
 import * as Constants from '/common/constants.js';
 import * as MessageBody from '/extlib/messageBody.js';
 
+MessageBody.setLogger(log);
+
 let lastComposingResolver;
 
 browser.runtime.onMessage.addListener((message, sender) => {
@@ -87,6 +89,7 @@ async function startTypicalReply(params) {
         break;
     }
   });
+  log('composeInfo ', composeInfo);
 
   // We need to set details after the composition window is opened,
   // because some details (ex. subject) are ignored for forwarded mails.
