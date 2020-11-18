@@ -22,24 +22,24 @@ browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRE
   const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
   log('original message: ', message);
 
-for (const definition of (configs.buttons || [])) {
-  if (!definition.quoteType && !definition.forwardType) {
-    createButton({
-      ...definition,
-      id:        `${definition.id}:no-quote`,
-      quoteType: Constants.QUOTE_NEVER
-    }, { message });
-    createButton({
-      ...definition,
-      id:        `${definition.id}:with-quote`,
-      quoteType: Constants.QUOTE_ALWAYS,
-      label:     `${configs.labelQuotePrefix}${definition.label}${configs.labelQuoteSuffix}`
-    }, { message });
+  for (const definition of (configs.buttons || [])) {
+    if (!definition.quoteType && !definition.forwardType) {
+      createButton({
+        ...definition,
+        id:        `${definition.id}:no-quote`,
+        quoteType: Constants.QUOTE_NEVER
+      }, { message });
+      createButton({
+        ...definition,
+        id:        `${definition.id}:with-quote`,
+        quoteType: Constants.QUOTE_ALWAYS,
+        label:     `${configs.labelQuotePrefix}${definition.label}${configs.labelQuoteSuffix}`
+      }, { message });
+    }
+    else {
+      createButton(definition, { message });
+    }
   }
-  else {
-    createButton(definition, { message });
-  }
-}
 });
 
 
@@ -74,13 +74,13 @@ function createButton(definition, { message } = {}) {
     if (!enabled)
       return;
     button.removeAttribute('disabled');
-  Dialog.initButton(container.lastChild, async _event => {
-    browser.runtime.sendMessage({
-      type: Constants.TYPE_DO_BUTTON_COMMAND,
-      params: definition
+    Dialog.initButton(container.lastChild, async _event => {
+      browser.runtime.sendMessage({
+        type: Constants.TYPE_DO_BUTTON_COMMAND,
+        params: definition
+      });
+      window.close();
     });
-    window.close();
-  });
   });
 }
 
