@@ -37,9 +37,7 @@ Of course you can add new types of typical replies as you like.
 For example, assume that you are going to add a new "Awesome!" button.
 
  1. Define the internal type name. Now I use `awesome`.
- 2. Define name of the reply type. It must be defined as a string preference, like:
-    
-    Managed storage for WebExtensions:
+ 2. Define name of the reply type. It must be defined as a object in an array under the key "buttons" in the managed storage for WebExtensions, like:
     
         "buttons": [
           {
@@ -49,7 +47,7 @@ For example, assume that you are going to add a new "Awesome!" button.
           }
         ]
     
-    Legacy style:
+    For legacy versions, it must be a string preference like:
     
         pref("extensions.typical-reply@clear-code.com.reply.awesome.label",     "Awesome!");
         pref("extensions.typical-reply@clear-code.com.reply.awesome.accesskey", "A");
