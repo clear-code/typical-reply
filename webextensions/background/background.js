@@ -102,9 +102,27 @@ async function startTypicalReply(params) {
       (params.subjectPrefix || params.subjectSuffix))
     details.subject = `${params.subjectPrefix || ''}${message.subject}${params.subjectSuffix || ''}`.trim();
 
+  const myAddress        = await getAddressFromIdentity(composeInfo.details.identityId);
+  const myAddressWrapped = `<${myAddress}>`;
+  log('myAddress ', myAddress);
+
   switch (params.recipients) {
     case Constants.RECIPIENTS_ALL:
+      if (composeInfo.details.to.length == 0) {
+        log(`params.recipients=${params.recipients}: recipients are unexpectedly blank, fallback to custom method`);
+        details.to = [
+          message.author,
+          ...message.recipients
+            .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))];
+        details.cc = message.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped));
+      }
+      break;
+
     case Constants.RECIPIENTS_SENDER:
+      if (composeInfo.details.to.length == 0) {
+        log(`params.recipients=${params.recipients}: recipients are unexpectedly blank, fallback to custom method`);
+        details.to = [message.author];
+      }
       break;
 
     case Constants.RECIPIENTS_BLANK:
@@ -160,6 +178,17 @@ async function startTypicalReply(params) {
       range.detach();
     }, 250);`,
   });
+}
+
+async function getAddressFromIdentity(id) {
+  const accounts = await browser.accounts.list();
+  for (const account of accounts) {
+    for (const identity of account.identities) {
+      if (identity.id == id)
+        return identity.email;
+    }
+  }
+  return null;
 }
 
 async function getImageDataURI(url) {
