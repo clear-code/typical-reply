@@ -42,7 +42,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":        "awesome",
             "label":     "Awesome!",
             "accesskey": "A"
           }
@@ -61,7 +62,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":            "awesome",
             ...
             "subjectPrefix": "[[Awesome!]]",
             "subject":       ""
@@ -83,7 +85,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":   "awesome",
             ...
             "body": "Awesome!!"
           }
@@ -107,7 +110,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":         "awesome",
             ...
             "recipients": "all" // "sender", "blank", or ["user@example.com", ...]
           }
@@ -123,7 +127,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":          "awesome",
             ...
             "forwardType": "attachment"
           }
@@ -141,7 +146,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":        "awesome",
             ...
             "quoteType": "yes"
           }
@@ -179,7 +185,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":             "awesome",
             ...
             "allowedDomains": "*" // or ["example.com", ...]
           }
@@ -208,7 +215,8 @@ For example, assume that you are going to add a new "Awesome!" button.
     Managed storage for WebExtensions:
     
         "buttons": [
-          "awesome": {
+          {
+            "id":        "awesome",
             ...
             "icon":      "data:image/png,...",
             "bodyImage": "data:image/png,..."
@@ -229,7 +237,8 @@ Managed storage for WebExtensions:
 
 ```javascript
 "buttons": [
-  "awesome": {
+  {
+    "id":             "awesome",
     "label":          "Awesome!",
     "accesskey":      "L",
     "subjectPrefix":  "[[!Awesome]]",
@@ -280,7 +289,8 @@ Managed storage for WebExtensions:
 
 ```javascript
 "buttons": [
-  "abuse": {
+  {
+    "id":             "abuse",
     "label":          "Report as Abuse Mail",
     "accesskey":      "R",
     "subjectPrefix":  "[[!Awesome]]",
