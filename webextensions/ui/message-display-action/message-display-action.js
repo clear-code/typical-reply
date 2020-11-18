@@ -16,6 +16,25 @@ import * as Constants from '/common/constants.js';
 
 const container = document.getElementById('commands');
 for (const definition of (configs.buttons || [])) {
+  if (!definition.quoteType && !definition.forwardType) {
+    createButton({
+      ...definition,
+      id:        `${definition.id}:no-quote`,
+      quoteType: Constants.QUOTE_NEVER
+    });
+    createButton({
+      ...definition,
+      id:        `${definition.id}:with-quote`,
+      quoteType: Constants.QUOTE_ALWAYS,
+      label:     `${configs.labelQuotePrefix}${definition.label}${configs.labelQuoteSuffix}`
+    });
+  }
+  else {
+    createButton(definition);
+  }
+}
+
+function createButton(definition) {
   log(`build button: `, definition);
   appendContents(container, `
     <li class="flex-box row"
@@ -30,7 +49,7 @@ for (const definition of (configs.buttons || [])) {
   Dialog.initButton(container.lastChild, async _event => {
     browser.runtime.sendMessage({
       type: Constants.TYPE_DO_BUTTON_COMMAND,
-      id:   definition.id
+      params: definition
     });
     window.close();
   });

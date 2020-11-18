@@ -36,15 +36,14 @@ browser.composeScripts.register({
 browser.runtime.onMessage.addListener((message, _sender) => {
   switch (message && message.type) {
     case Constants.TYPE_DO_BUTTON_COMMAND:
-      doButtonCommand(message.id).catch(console.error);
+      startTypicalReply(message.params).catch(console.error);
       break;
   }
 });
 
-async function doButtonCommand(id) {
-  const definition = (configs.buttons || []).find(definition => definition.id == id);
-  log(`doButtonCommand: ${id}`, definition);
-  if (!definition)
+async function startTypicalReply(params) {
+  log(`startTypicalReply: `, params);
+  if (!params)
     return;
 
   const tabs = await browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT });
@@ -57,7 +56,7 @@ async function doButtonCommand(id) {
   const composeInfo = await new Promise(async (resolve, _reject) => {
     lastComposingResolver = resolve;
     const details = {};
-    switch (definition.forwardType) {
+    switch (params.forwardType) {
       case 'attachment':
         console.log('begin forwared as attachment ', details);
         browser.compose.beginForward(message.id, 'forwardAsAttachment', details);
@@ -70,7 +69,7 @@ async function doButtonCommand(id) {
 
       default:
         console.log('begin reply ', details);
-        switch (definition.recipients) {
+        switch (params.recipients) {
           case Constants.RECIPIENTS_ALL:
             browser.compose.beginReply(message.id, 'replyToAll', details);
             break;
@@ -91,14 +90,14 @@ async function doButtonCommand(id) {
   // because some details (ex. subject) are ignored for forwarded mails.
 
   const details = {
-    subject: String(definition.subject || '').trim()
+    subject: String(params.subject || '').trim()
   };
 
   if (!details.subject &&
-      (definition.subjectPrefix || definition.subjectSuffix))
-    details.subject = `${definition.subjectPrefix || ''}${message.subject}${definition.subjectSuffix || ''}`.trim();
+      (params.subjectPrefix || params.subjectSuffix))
+    details.subject = `${params.subjectPrefix || ''}${message.subject}${params.subjectSuffix || ''}`.trim();
 
-  switch (definition.recipients) {
+  switch (params.recipients) {
     case Constants.RECIPIENTS_ALL:
     case Constants.RECIPIENTS_SENDER:
       break;
@@ -108,21 +107,27 @@ async function doButtonCommand(id) {
       break;
 
     default: {
-      const recipients = Array.isArray(definition.recipients) ? definition.recipients : [String(definition.recipients || '')];
+      const recipients = Array.isArray(params.recipients) ? params.recipients : [String(params.recipients || '')];
       details.to = recipients.map(address => address.trim()).filter(address => !!address);
     }; break;
   }
 
   log('set details ', details);
-  browser.compose.setComposeDetails(composeInfo.tabId, details);
+  try {
+    await browser.compose.setComposeDetails(composeInfo.tabId, details);
+  }
+  catch(error) {
+    console.log(error);
+  }
 
-  const body = `${String(definition.body || '').replace(/\r\n?/g, '\n')}\n`;
-  const bodyImage = definition.bodyImage && await getImageDataURI(definition.bodyImage).catch(error => {
+  log('perpare body ');
+  const body = `${String(params.body || '').replace(/\r\n?/g, '\n')}\n`;
+  const bodyImage = params.bodyImage && await getImageDataURI(params.bodyImage).catch(error => {
     log('failed to get image data: URI ', error);
     return '';
   });
-  const quotation = (!definition.forwardType && definition.quoteType == Constants.QUOTE_ALWAYS) ?
-    (await MessageBody.getBody(message.id)).replace(/^/gm, '> ') : '';
+  const quotation = (!params.forwardType && params.quoteType == Constants.QUOTE_ALWAYS) ?
+    (await MessageBody.getBody(message.id).catch(error => { console.log(error); return ''; })).replace(/^/gm, '> ') : '';
 
   log('set body ', { body, bodyImage, quotation });
   browser.tabs.executeScript(composeInfo.tabId, {
