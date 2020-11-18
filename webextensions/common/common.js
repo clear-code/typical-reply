@@ -11,8 +11,6 @@ import * as Constants from './constants.js';
 const OVERRIDE_DEFAULT_CONFIGS = {}; /* Replace this for more customization on an enterprise use. */
 
 export const configs = new Configs({
-  replyingType: null,
-  replyingQuoteType: null,
   buttons: [
     { id:             'accept',
       label:          browser.i18n.getMessage('exampleButton_accept_label'),
@@ -23,7 +21,6 @@ export const configs = new Configs({
       bodyImage:      browser.runtime.getURL('/resources/accept.png'),
       recipients:     Constants.RECIPIENTS_ALL,
       quoteType:      Constants.QUOTE_ALWAYS,
-      priority:       '',
       allowedDomains: Constants.DOMAIN_ALL,
       icon:           browser.runtime.getURL('/resources/accept.png') },
     { id:             'reject',
@@ -34,8 +31,6 @@ export const configs = new Configs({
       body:           browser.i18n.getMessage('exampleButton_reject_body'),
       bodyImage:      browser.runtime.getURL('/resources/reject.png'),
       recipients:     Constants.RECIPIENTS_ALL,
-      quoteType:      '',
-      priority:       '',
       allowedDomains: Constants.DOMAIN_ALL,
       icon:           browser.runtime.getURL('/resources/reject.png') },
     { id:             'like',
@@ -46,8 +41,6 @@ export const configs = new Configs({
       body:           browser.i18n.getMessage('exampleButton_like_body'),
       bodyImage:      browser.runtime.getURL('/resources/like.png'),
       recipients:     Constants.RECIPIENTS_ALL,
-      quoteType:      '',
-      priority:       '',
       allowedDomains: Constants.DOMAIN_ALL,
       icon:           browser.runtime.getURL('/resources/like.png') },
     { id:             'reportAttachment',
@@ -58,7 +51,6 @@ export const configs = new Configs({
       body:           browser.i18n.getMessage('exampleButton_reportAttachment_body'),
       recipients:     'report@example.com',
       forwardType:    'attachment',
-      priority:       '',
       allowedDomains: Constants.DOMAIN_ALL },
     { id:             'reportInline',
       label:          browser.i18n.getMessage('exampleButton_reportInline_label'),
@@ -68,7 +60,6 @@ export const configs = new Configs({
       body:           browser.i18n.getMessage('exampleButton_reportInline_body'),
       recipients:     'report@example.com',
       forwardType:    'inline',
-      priority:       '',
       allowedDomains: Constants.DOMAIN_ALL }
   ],
   labelQuotePrefix: browser.i18n.getMessage('labelQuotePrefix'),
