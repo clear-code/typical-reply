@@ -184,17 +184,17 @@ function getPreviousItem(base, condition = '') {
   const extrcondition = condition ? `[${condition}]` : '' ;
   const item = (
     evaluateXPath(
-      `ancestor::li/preceding-sibling::li/descendant::button${extrcondition}[1]`,
+      `ancestor::li/preceding-sibling::li/descendant::button[not(@disabled)]${extrcondition}[1]`,
       base,
       XPathResult.FIRST_ORDERED_NODE_TYPE
     ).singleNodeValue ||
     evaluateXPath(
-      `ancestor::li/following-sibling::li/descendant::button${extrcondition}[last()]`,
+      `ancestor::li/following-sibling::li/descendant::button[not(@disabled)]${extrcondition}[last()]`,
       base,
       XPathResult.FIRST_ORDERED_NODE_TYPE
     ).singleNodeValue ||
     evaluateXPath(
-      `ancestor::li/self::li/descendant::button${extrcondition}`,
+      `ancestor::li/self::li/descendant::button[not(@disabled)]${extrcondition}`,
       base,
       XPathResult.FIRST_ORDERED_NODE_TYPE
     ).singleNodeValue
@@ -208,17 +208,17 @@ function getNextItem(base, condition = '') {
   const extrcondition = condition ? `[${condition}]` : '' ;
   const item = (
     evaluateXPath(
-      `ancestor::li/following-sibling::li/descendant::button${extrcondition}[1]`,
+      `ancestor::li/following-sibling::li/descendant::button[not(@disabled)]${extrcondition}[1]`,
       base,
       XPathResult.FIRST_ORDERED_NODE_TYPE
     ).singleNodeValue ||
     evaluateXPath(
-      `ancestor::li/preceding-sibling::li/descendant::button${extrcondition}[last()]`,
+      `ancestor::li/preceding-sibling::li/descendant::button[not(@disabled)]${extrcondition}[last()]`,
       base,
       XPathResult.FIRST_ORDERED_NODE_TYPE
     ).singleNodeValue ||
     evaluateXPath(
-      `ancestor::li/self::li/descendant::button${extrcondition}`,
+      `ancestor::li/self::li/descendant::button[not(@disabled)]${extrcondition}`,
       base,
       XPathResult.FIRST_ORDERED_NODE_TYPE
     ).singleNodeValue
