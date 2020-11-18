@@ -54,6 +54,7 @@ async function startTypicalReply(params) {
 
   const tab     = tabs[0];
   const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
+  log('original message: ', message);
 
   const composeInfo = await new Promise(async (resolve, _reject) => {
     lastComposingResolver = resolve;
