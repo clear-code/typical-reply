@@ -131,7 +131,7 @@ async function startTypicalReply(params) {
 
   log('set body ', { body, bodyImage, quotation });
   browser.tabs.executeScript(composeInfo.tabId, {
-    code: `(() => {
+    code: `setTimeout(() => {
       const citePrefix = document.querySelector('body > div.moz-cite-prefix');
       if (${String(configs.debug)})
         console.log('current body: ', { body: document.body, citePrefix });
@@ -153,7 +153,7 @@ async function startTypicalReply(params) {
       range.insertNode(fragment);
 
       range.detach();
-    })();`,
+    }, 250);`,
   });
 }
 
