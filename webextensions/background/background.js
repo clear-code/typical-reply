@@ -10,6 +10,7 @@ import {
   log
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as MessageBody from '/extlib/messageBody.js';
 
 let lastComposingResolver;
 
@@ -53,13 +54,37 @@ async function doButtonCommand(id) {
   const tab     = tabs[0];
   const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
 
-  const composeInfo = await new Promise((resolve, _reject) => {
+  const composeInfo = await new Promise(async (resolve, _reject) => {
     lastComposingResolver = resolve;
-    const detailsOnForward = {
-      body: String(definition.body || '').trim()
-    };
-    console.log('begin forwared ', detailsOnForward);
-    browser.compose.beginForward(message.id, 'forwardAsAttachment', detailsOnForward)
+    const details = {};
+    switch (definition.forwardType) {
+      case 'attachment':
+        console.log('begin forwared as attachment ', details);
+        browser.compose.beginForward(message.id, 'forwardAsAttachment', details);
+        break;
+
+      case 'inline':
+        console.log('begin forwared inline ', details);
+        browser.compose.beginForward(message.id, 'forwardInline', details);
+        break;
+
+      default:
+        console.log('begin reply ', details);
+        switch (definition.recipients) {
+          case Constants.RECIPIENTS_ALL:
+            browser.compose.beginReply(message.id, 'replyToAll', details);
+            break;
+
+          case Constants.RECIPIENTS_SENDER:
+            browser.compose.beginReply(message.id, 'replyToSender', details);
+            break;
+
+          default:
+            browser.compose.beginReply(message.id, 'replyToSender', details);
+            break;
+        }
+        break;
+    }
   });
 
   // We need to set details after the composition window is opened,
@@ -73,43 +98,47 @@ async function doButtonCommand(id) {
       (definition.subjectPrefix || definition.subjectSuffix))
     details.subject = `${definition.subjectPrefix || ''}${message.subject}${definition.subjectSuffix || ''}`.trim();
 
-  const myAddress        = await getAddressFromIdentity(composeInfo.details.identityId);
-  const myAddressWrapped = `<${myAddress}>`;
-  log('myAddress ', myAddress);
-
   switch (definition.recipients) {
     case Constants.RECIPIENTS_ALL:
-      details.to = [
-        message.author,
-        ...message.recipients
-          .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))];
-      details.cc = message.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped));
-      break;
-
     case Constants.RECIPIENTS_SENDER:
-      details.to = [message.author];
       break;
 
     case Constants.RECIPIENTS_BLANK:
       details.to = [];
       break;
 
-    default:
-      details.to = String(definition.recipients || '').map(address => address.trim()).filter(address => !!address);
-      break;
+    default: {
+      const recipients = Array.isArray(definition.recipients) ? definition.recipients : [String(definition.recipients || '')];
+      details.to = recipients.map(address => address.trim()).filter(address => !!address);
+    }; break;
   }
 
-  console.log('set details ', details);
+  log('set details ', details);
   browser.compose.setComposeDetails(composeInfo.tabId, details);
-}
 
-async function getAddressFromIdentity(id) {
-  const accounts = await browser.accounts.list();
-  for (const account of accounts) {
-    for (const identity of account.identities) {
-      if (identity.id == id)
-        return identity.email;
-    }
-  }
-  return null;
+  const body = `${String(definition.body || '').replace(/\r\n?/g, '\n')}\n`;
+  const quotation = (!definition.forwardType && definition.quoteType == Constants.QUOTE_ALWAYS) ?
+    (await MessageBody.getBody(message.id)).replace(/^/gm, '> ') : '';
+
+  browser.tabs.executeScript(composeInfo.tabId, {
+    code: `(() => {
+      const citePrefix = document.querySelector('body > div.moz-cite-prefix');
+      if (${String(configs.debug)})
+        console.log('current body: ', { body: document.body, citePrefix });
+
+      let body = ${JSON.stringify(body)};
+
+      const quotation = ${JSON.stringify(quotation)};
+      if (!citePrefix && quotation)
+        body = body + '\\n' + quotation;
+
+      const range = document.createRange();
+      range.setStartBefore(document.body.firstChild);
+      range.setEndBefore(document.body.firstChild);
+      const fragment = range.createContextualFragment(body.replace(/\\n/g, '<br>'));
+      range.insertNode(fragment);
+
+      range.detach();
+    })();`,
+  });
 }
