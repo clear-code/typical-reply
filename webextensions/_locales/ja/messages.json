@@ -23,6 +23,18 @@
   "exampleButton_like_subject":       { "message": " " },
   "exampleButton_like_body":          { "message": "いいね！" },
 
+  "exampleButton_reportAttachment_label":         { "message": "添付して報告" },
+  "exampleButton_reportAttachment_accesskey":     { "message": "R" },
+  "exampleButton_reportAttachment_subjectPrefix": { "message": "【報告】" },
+  "exampleButton_reportAttachment_subject":       { "message": " " },
+  "exampleButton_reportAttachment_body":          { "message": "報告します。" },
+
+  "exampleButton_reportInline_label":         { "message": "インラインで報告" },
+  "exampleButton_reportInline_accesskey":     { "message": "R" },
+  "exampleButton_reportInline_subjectPrefix": { "message": "【報告】" },
+  "exampleButton_reportInline_subject":       { "message": " " },
+  "exampleButton_reportInline_body":          { "message": "報告します。" },
+
   "labelQuotePrefix":       { "message": " " },
   "labelQuoteSuffix":       { "message": ":引用付き" },
   "labelNotAllowedTitle":   { "message": "定型返信できない宛先が含まれています" },

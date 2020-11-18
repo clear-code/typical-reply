@@ -23,6 +23,18 @@
   "exampleButton_like_subject":       { "message": " " },
   "exampleButton_like_body":          { "message": "Like!" },
 
+  "exampleButton_reportAttachment_label":         { "message": "Reprot with attachment" },
+  "exampleButton_reportAttachment_accesskey":     { "message": "R" },
+  "exampleButton_reportAttachment_subjectPrefix": { "message": "[[Report]]" },
+  "exampleButton_reportAttachment_subject":       { "message": " " },
+  "exampleButton_reportAttachment_body":          { "message": "Reported." },
+
+  "exampleButton_reportInline_label":         { "message": "Report inline" },
+  "exampleButton_reportInline_accesskey":     { "message": "R" },
+  "exampleButton_reportInline_subjectPrefix": { "message": "[[Report]]" },
+  "exampleButton_reportInline_subject":       { "message": " " },
+  "exampleButton_reportInline_body":          { "message": "Reported." },
+
   "labelQuotePrefix":       { "message": " " },
   "labelQuoteSuffix":       { "message": " with Quote" },
   "labelNotAllowedTitle":   { "message": "Cannot send a typical reply to not allowed domains." },
