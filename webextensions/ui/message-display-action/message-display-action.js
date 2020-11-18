@@ -45,16 +45,20 @@ function createButton(definition) {
     else
       label += `(<key>${sanitizeForHTMLText(definition.accesskey)}</key>)`
   }
-  appendContents(container, `
+  const accesskey = definition.accesskey ? ` accesskey=${JSON.stringify(sanitizeForHTMLText(definition.accesskey))}` : '';
+  const source = `
     <li class="flex-box row"
        ><button id=${JSON.stringify('button:' + sanitizeForHTMLText(definition.id))}
                 class="flex-box row"
-                accesskey=${JSON.stringify(sanitizeForHTMLText(definition.accesskey))}
+                ${accesskey}
+                data-accesskey=${accesskey ? JSON.stringify(sanitizeForHTMLText(definition.accesskey.toLowerCase())) : '""'}
                ><span class="icon flex-box column"
                       style='background-image:url(${JSON.stringify(sanitizeForHTMLText(definition.icon))})'
                      ></span><label class="flex-box column"
                                    ><span>${label}</span></label></button></li>
-  `.trim());
+  `.trim();
+  log(' => source: ', source);
+  appendContents(container, source);
   Dialog.initButton(container.lastChild, async _event => {
     browser.runtime.sendMessage({
       type: Constants.TYPE_DO_BUTTON_COMMAND,
@@ -63,3 +67,181 @@ function createButton(definition) {
     window.close();
   });
 }
+
+let mLastHoverItem;
+let mLastFocusedItem;
+
+container.addEventListener('mouseover', event => {
+  setHover(null);
+  if (mLastFocusedItem) {
+    mLastFocusedItem.blur();
+    mLastFocusedItem = null;
+  }
+  mLastHoverItem = null;
+});
+
+window.addEventListener('keydown', event => {
+  if (!mLastHoverItem)
+    mLastHoverItem = document.querySelector('button:hover');
+  switch (event.key) {
+    case 'ArrowUp':
+      event.stopPropagation();
+      event.preventDefault();
+      advanceFocus(-1);
+      break;
+
+    case 'ArrowDown':
+      event.stopPropagation();
+      event.preventDefault();
+      advanceFocus(1);
+      break;
+
+    case 'Home':
+      event.stopPropagation();
+      event.preventDefault();
+      focusTo(container.firstChild.querySelector('button'));
+      setHover(null);
+      break;
+
+    case 'End':
+      event.stopPropagation();
+      event.preventDefault();
+      focusTo(container.lastChild.querySelector('button'));
+      setHover(null);
+      break;
+
+    case 'Escape': {
+      event.stopPropagation();
+      event.preventDefault();
+      window.close();
+    }; break;
+
+    default:
+      if (event.key.length == 1) {
+        const item = getNextFocusedItemByAccesskey(event.key);
+        log('item for key : ', event.key, item);
+        if (item) {
+          focusTo(item);
+          setHover(null);
+          if (getNextFocusedItemByAccesskey(event.key) == item)
+            item.click();
+        }
+      }
+      return;
+  }
+});
+
+function getNextFocusedItemByAccesskey(key) {
+  if (!mLastHoverItem)
+    mLastHoverItem = document.querySelector('button:hover');
+  const current = mLastHoverItem || mLastFocusedItem || container.firstChild.querySelector('button');
+  const condition = `@data-accesskey="${key.toLowerCase()}"`;
+  return getNextItem(current, condition);
+}
+
+function advanceFocus(direction, lastFocused = null) {
+  if (!mLastHoverItem)
+    mLastHoverItem = document.querySelector('button:hover');
+  lastFocused = lastFocused || mLastHoverItem || mLastFocusedItem;
+  if (!lastFocused) {
+    if (direction < 0)
+      mLastFocusedItem = lastFocused = container.firstChild.querySelector('button');
+    else
+      mLastFocusedItem = lastFocused = container.lastChild.querySelector('button');
+  }
+  focusTo(direction < 0 ? getPreviousItem(lastFocused) : getNextItem(lastFocused));
+  setHover(null);
+}
+
+function evaluateXPath(expression, context, type) {
+  if (!type)
+    type = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+  try {
+    return (context.ownerDocument || context).evaluate(
+      expression,
+      (context || document),
+      null,
+      type,
+      null
+    );
+  }
+  catch(_e) {
+    return {
+      singleNodeValue: null,
+      snapshotLength:  0,
+      snapshotItem:    function() {
+        return null
+      }
+    };
+  }
+}
+
+function hasClass(className) {
+  return `contains(concat(" ", normalize-space(@class), " "), " ${className} ")`;
+}
+
+function getPreviousItem(base, condition = '') {
+  const extrcondition = condition ? `[${condition}]` : '' ;
+  const item = (
+    evaluateXPath(
+      `ancestor::li/preceding-sibling::li/descendant::button${extrcondition}[1]`,
+      base,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue ||
+    evaluateXPath(
+      `ancestor::li/following-sibling::li/descendant::button${extrcondition}[last()]`,
+      base,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue ||
+    evaluateXPath(
+      `ancestor::li/self::li/descendant::button${extrcondition}`,
+      base,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue
+  );
+  if (window.getComputedStyle(item, null).display == 'none')
+    return getPreviousItem(item);
+  return item;
+}
+
+function getNextItem(base, condition = '') {
+  const extrcondition = condition ? `[${condition}]` : '' ;
+  const item = (
+    evaluateXPath(
+      `ancestor::li/following-sibling::li/descendant::button${extrcondition}[1]`,
+      base,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue ||
+    evaluateXPath(
+      `ancestor::li/preceding-sibling::li/descendant::button${extrcondition}[last()]`,
+      base,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue ||
+    evaluateXPath(
+      `ancestor::li/self::li/descendant::button${extrcondition}`,
+      base,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue
+  );
+  if (item && window.getComputedStyle(item, null).display == 'none')
+    return getNextItem(item);
+  return item;
+}
+
+function focusTo(item) {
+  mLastFocusedItem = mLastHoverItem = item;
+  mLastFocusedItem.focus();
+  mLastFocusedItem.scrollIntoView({ block: 'nearest' });
+}
+
+function setHover(item) {
+  for (const item of container.querySelectorAll('button.hover')) {
+    if (item != item)
+      item.classList.remove('hover');
+  }
+  if (item)
+    item.classList.add('hover');
+}
+
+
+window.focus();

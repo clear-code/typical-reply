@@ -37,6 +37,7 @@ button {
   font: menu;
   margin: 0;
   padding: 0 0 0 0.25em;
+  box-shadow: none !important; /* cancel focus ring defined by ui-color.css */
 }
 
 button > .icon {
