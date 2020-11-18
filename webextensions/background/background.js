@@ -7,7 +7,9 @@
 
 import {
   configs,
-  log
+  log,
+  shouldEnableButton,
+  getRecipients,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as MessageBody from '/extlib/messageBody.js';
@@ -30,6 +32,21 @@ configs.$loaded.then(() => {
   browser.messageDisplayAction.onClicked.addListener((_tab, _info) => {
     startTypicalReply(button).catch(console.error);
   });
+});
+
+browser.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
+  const buttons = configs.buttons || [];
+  const account = await browser.accounts.get(message.folder.accountId);
+  const allDisabled = (await Promise.all(buttons.map(button => shouldEnableButton(button, { message })))).every(enabled => !enabled);
+  if (allDisabled)
+    browser.messageDisplayAction.disable(tab.id);
+  else
+    browser.messageDisplayAction.enable(tab.id);
+});
+
+browser.messageDisplay.onMessagesDisplayed.addListener((tab, messages) => {
+  if (messages.length > 1)
+    browser.messageDisplayAction.disable(tab.id);
 });
 
 let lastComposingResolver;
@@ -200,49 +217,6 @@ async function startTypicalReply(params) {
       range.detach();
     }, 250);`,
   });
-}
-
-async function getRecipients({ originalMessage, recipientType, identityId }) {
-  const myAddress        = await getAddressFromIdentity(identityId);
-  const myAddressWrapped = `<${myAddress}>`;
-  log('myAddress ', myAddress);
-  switch (recipientType) {
-    case Constants.RECIPIENTS_ALL:
-      return {
-        to: [
-          originalMessage.author,
-          ...originalMessage.recipients
-            .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))
-        ],
-        cc: originalMessage.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped)),
-        bcc: []
-      };
-
-    case Constants.RECIPIENTS_SENDER:
-      return {
-        to: [originalMessage.author],
-        cc: [],
-        bcc: []
-      };
-
-    default:
-      return {
-        to: [],
-        cc: [],
-        bcc: []
-      };
-  }
-}
-
-async function getAddressFromIdentity(id) {
-  const accounts = await browser.accounts.list();
-  for (const account of accounts) {
-    for (const identity of account.identities) {
-      if (identity.id == id)
-        return identity.email;
-    }
-  }
-  return null;
 }
 
 async function getImageDataURI(url) {

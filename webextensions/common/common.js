@@ -102,3 +102,67 @@ export function appendContents(parent, source) {
 export function sanitizeForHTMLText(text) {
   return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+
+export async function shouldEnableButton(button, { message }) {
+  const account = await browser.accounts.get(message.folder.accountId);
+  if (!button.allowedDomains || button.allowedDomains == '*')
+    return true;
+  const domains = new Set(Array.isArray(button.allowedDomains) ? button.allowedDomains : [button.allowedDomains]);
+  const { to, cc, bcc } = await getRecipients({
+    originalMessage: message,
+    recipientType:   button.recipients,
+    myAddress:       account.identities[0].email
+  });
+  const allRecipients = [...to, ...cc, ...bcc];
+  const allMatched = allRecipients.every(recipient => {
+    const address = /<([^>]+)>$/.test(recipient) ? RegExp.$1 : recipient;
+    const domain = /@([^@]+)$/.test(address) ? RegExp.$1 : '';
+    console.log('domain: ', domain);
+    return domains.has(domain);
+  });
+  return allMatched;
+}
+
+export async function getRecipients({ originalMessage, recipientType, myAddress, identityId }) {
+  if (!myAddress)
+    myAddress = await getAddressFromIdentity(identityId);
+  const myAddressWrapped = `<${myAddress}>`;
+  log('myAddress ', myAddress);
+  switch (recipientType) {
+    case Constants.RECIPIENTS_ALL:
+      return {
+        to: [
+          originalMessage.author,
+          ...originalMessage.recipients
+            .filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped))
+        ],
+        cc: originalMessage.ccList.filter(recipient => recipient == myAddress || recipient.endsWith(myAddressWrapped)),
+        bcc: []
+      };
+
+    case Constants.RECIPIENTS_SENDER:
+      return {
+        to: [originalMessage.author],
+        cc: [],
+        bcc: []
+      };
+
+    default:
+      return {
+        to: [],
+        cc: [],
+        bcc: []
+      };
+  }
+}
+
+async function getAddressFromIdentity(id) {
+  const accounts = await browser.accounts.list();
+  for (const account of accounts) {
+    for (const identity of account.identities) {
+      if (identity.id == id)
+        return identity.email;
+    }
+  }
+  return null;
+}

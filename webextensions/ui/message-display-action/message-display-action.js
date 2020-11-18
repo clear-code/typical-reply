@@ -10,31 +10,40 @@ import {
   log,
   appendContents,
   sanitizeForHTMLText,
+  shouldEnableButton,
 } from '/common/common.js';
 import * as Dialog from '/extlib/dialog.js';
 import * as Constants from '/common/constants.js';
 
 const container = document.getElementById('commands');
+
+browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(async tabs => {
+  const tab     = tabs[0];
+  const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
+  log('original message: ', message);
+
 for (const definition of (configs.buttons || [])) {
   if (!definition.quoteType && !definition.forwardType) {
     createButton({
       ...definition,
       id:        `${definition.id}:no-quote`,
       quoteType: Constants.QUOTE_NEVER
-    });
+    }, { message });
     createButton({
       ...definition,
       id:        `${definition.id}:with-quote`,
       quoteType: Constants.QUOTE_ALWAYS,
       label:     `${configs.labelQuotePrefix}${definition.label}${configs.labelQuoteSuffix}`
-    });
+    }, { message });
   }
   else {
-    createButton(definition);
+    createButton(definition, { message });
   }
 }
+});
 
-function createButton(definition) {
+
+function createButton(definition, { message } = {}) {
   log(`build button: `, definition);
   let label = sanitizeForHTMLText(definition.label);
   if (definition.accesskey) {
@@ -52,6 +61,7 @@ function createButton(definition) {
                 class="flex-box row"
                 ${accesskey}
                 data-accesskey=${accesskey ? JSON.stringify(sanitizeForHTMLText(definition.accesskey.toLowerCase())) : '""'}
+                disabled="true"
                ><span class="icon flex-box column"
                       style='background-image:url(${JSON.stringify(sanitizeForHTMLText(definition.icon))})'
                      ></span><label class="flex-box column"
@@ -59,12 +69,18 @@ function createButton(definition) {
   `.trim();
   log(' => source: ', source);
   appendContents(container, source);
+  const button = container.lastChild.querySelector('button');
+  shouldEnableButton(definition, { message }).then(enabled => {
+    if (!enabled)
+      return;
+    button.removeAttribute('disabled');
   Dialog.initButton(container.lastChild, async _event => {
     browser.runtime.sendMessage({
       type: Constants.TYPE_DO_BUTTON_COMMAND,
       params: definition
     });
     window.close();
+  });
   });
 }
 
