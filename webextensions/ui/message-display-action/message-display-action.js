@@ -87,7 +87,7 @@ function createButton(definition, { message } = {}) {
 let mLastHoverItem;
 let mLastFocusedItem;
 
-container.addEventListener('mouseover', event => {
+container.addEventListener('mouseover', _event => {
   setHover(null);
   if (mLastFocusedItem) {
     mLastFocusedItem.blur();
