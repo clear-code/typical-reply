@@ -39,13 +39,36 @@ For example, assume that you are going to add a new "Awesome!" button.
  1. Define the internal type name. Now I use `awesome`.
  2. Define name of the reply type. It must be defined as a string preference, like:
     
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            "label":     "Awesome!",
+            "accesskey": "A"
+          }
+        ]
+    
+    Legacy style:
+    
         pref("extensions.typical-reply@clear-code.com.reply.awesome.label",     "Awesome!");
         pref("extensions.typical-reply@clear-code.com.reply.awesome.accesskey", "A");
+        // The part `extensions.typical-reply@clear-code.com.reply.` is the common prefix.
     
-    The part `extensions.typical-reply@clear-code.com.reply.` is the common prefix.
     The `label` is used for the custom button or the menu item of the "Tipycal Reply" button.
     The `accesskey` is used for the menu item in the menu of the "Tipycal Reply" button.
  3. Define subject of typical replies from the button.
+    
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "subjectPrefix": "[[Awesome!]]",
+            "subject":       ""
+          }
+        ]
+    
+    Legacy style:
     
         pref("extensions.typical-reply@clear-code.com.reply.awesome.subjectPrefix", "[[Awesome!]]");
         pref("extensions.typical-reply@clear-code.com.reply.awesome.subject",       "");
@@ -57,6 +80,17 @@ For example, assume that you are going to add a new "Awesome!" button.
     If you use another option `subject`, the subject of the reply will be completely replaced to the value of `subject`.
  4. Define body of typical replies from the button.
     
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "body": "Awesome!!"
+          }
+        ]
+    
+    Legacy style:
+    
         pref("extensions.typical-reply@clear-code.com.reply.awesome.body", "Awesome!!");
     
     It will be inserted to the body of the reply automatically.
@@ -66,14 +100,37 @@ For example, assume that you are going to add a new "Awesome!" button.
     * `all`: Same to "Reply to All". The reply inherits To, Cc, and Bcc from the original mail.
     * `sender`: Same to "Reply to Sender". The reply will be sent to the author of the original mail.
     * `blank`: The list of recipients will become blank completely.
-    * Comma-separated E-mail addresses
+    * Array of E-mail addresses
     
     For example:
      
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "recipients": "all" // "sender", "blank", or ["user@example.com", ...]
+          }
+        ]
+    
+    Legacy style:
+    
         pref("extensions.typical-reply@clear-code.com.reply.awesome.recipients", "all");
+        // "sender", "blank", or "user@example.com, ..."
     
  6. Define forwarding behavior.
      
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "forwardType": "attachment"
+          }
+        ]
+    
+    Legacy style:
+    
         pref("extensions.typical-reply@clear-code.com.reply.awesome.forwardType", "attachment");
     
     Acceptable values are `"attachment"` (always forward as an attachment) or `"inline"` (always forward inline). In these cases you need to specify E-mail addresses via the `recipients` parameter previously described, in other words both `all` and `sender` are ignored.
@@ -81,21 +138,32 @@ For example, assume that you are going to add a new "Awesome!" button.
     If you want to send a reply from the button, don't specify any value for this parameter.
  7. Define quotation behavior.
      
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "quoteType": "yes"
+          }
+        ]
+    
+    Legacy style:
+    
         pref("extensions.typical-reply@clear-code.com.reply.awesome.quoteType", "yes");
     
     Acceptable values are `"yes"` (always quote body) or `"no"` (never qupte body). Otherwise the button for the type will have two choices: "reply without quote" and "reply with quote".
- 8. Define the priority.
+ 8. Define the priority (available only on legacy versions, not available on WebExtensions version).
     Possible values are `Highest`, `High`, `Normal`, `Low` and `Lowest`.
      
         pref("extensions.typical-reply@clear-code.com.reply.awesome.priority", "Highest");
     
- 9. Define button type.
+ 9. Define button type (available only on legacy versions, not available on WebExtensions version).
     
         pref("extensions.typical-reply@clear-code.com.reply.awesome.separate", false);
     
     If you choose `true`, a new toolbar button for the reply type is generated in the header area.
     Otherwise menu items for the reply type is generated in the menu item of the "Tipycal Reply" button.
- 10. Define behavior of the virtual folder.
+ 10. Define behavior of the virtual folder. (available only on legacy versions, not available on WebExtensions version).
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.searchFolder",  true);
          pref("extensions.typical-reply@clear-code.com.reply.awesome.searchTargets", "all");
@@ -108,16 +176,25 @@ For example, assume that you are going to add a new "Awesome!" button.
      
  11. Define allowed recipient domains.
      
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "allowedDomains": "*" // or ["example.com", ...]
+          }
+        ]
+    
+    Legacy style:
+    
          pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "*");
+         // or "example.com, ..."
      
      If you set `allowedDomains` to `*` or a blank string, then typical replies can be sent
      for any recipient.
-     Otherwise - if you write a comma-separated list of domains, then you can send typical replies
-     only when all recipients are included in the list. For example:
-     
-         pref("extensions.typical-reply@clear-code.com.reply.awesome.allowedDomains", "example.com, example.jp");
-     
- 12. Define behaviour of auto-send.
+     Otherwise - if you write a list of domains, then you can send typical replies
+     only when all recipients are included in the list.
+ 12. Define behaviour of auto-send. (available only on legacy versions, not available on WebExtensions version).
      
          pref("extensions.typical-reply@clear-code.com.reply.awesome.autoSend", "noquote");
      
@@ -128,6 +205,18 @@ For example, assume that you are going to add a new "Awesome!" button.
  13. Define images for the type.
      You can specify images as an URI.
      
+    Managed storage for WebExtensions:
+    
+        "buttons": [
+          "awesome": {
+            ...
+            "icon":      "data:image/png,...",
+            "bodyImage": "data:image/png,..."
+          }
+        ]
+    
+    Legacy style:
+    
          pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",      "data:image/png,...");
          pref("extensions.typical-reply@clear-code.com.reply.awesome.bodyImage", "data:image/png,...");
      
@@ -135,6 +224,28 @@ For example, assume that you are going to add a new "Awesome!" button.
      If you set any URI fo the `bodyImage`, it will be embedded to the message, as an attachment.
 
 Finally you'll get a configurations for the new button, like following:
+
+Managed storage for WebExtensions:
+
+```javascript
+"buttons": [
+  "awesome": {
+    "label":          "Awesome!",
+    "accesskey":      "L",
+    "subjectPrefix":  "[[!Awesome]]",
+    "subject":        "",
+    "body":           "Awesome!",
+    "recipients":     "all",
+    "forwardType":    "",
+    "quoteType":      "",
+    "allowedDomains": "*",
+    "icon":           "data:image/png,...(awesome.png)...",
+    "bodyImage":      "data:image/png,...(awesome.png)..."
+  }
+]
+```
+
+Legacy style:
 
 ```javascript
 pref("extensions.typical-reply@clear-code.com.reply.awesome.label",         "Awesome!");
@@ -155,7 +266,7 @@ pref("extensions.typical-reply@clear-code.com.reply.awesome.icon",          "dat
 pref("extensions.typical-reply@clear-code.com.reply.awesome.bodyImage",     "data:image/png,...(awesome.png)...");
 ```
 
-The you have to add the internal name of the type you defined, like:
+Then you have to add the internal name of the type you defined for legacy versions, like:
 
 ```javascript
 pref("extensions.typical-reply@clear-code.com.buttons", "accept,reject,like,awesome");
@@ -164,6 +275,26 @@ pref("extensions.typical-reply@clear-code.com.buttons", "accept,reject,like,awes
 ## More examples
 
 ### "Report as abuse" button
+
+Managed storage for WebExtensions:
+
+```javascript
+"buttons": [
+  "abuse": {
+    "label":          "Report as Abuse Mail",
+    "accesskey":      "R",
+    "subjectPrefix":  "[[!Awesome]]",
+    "subject":        "",
+    "body":           "This is an abuse mail.",
+    "recipients":     ["report-abuse@example.com"],
+    "forwardType":    "attachment",
+    "quoteType":      "no",
+    "allowedDomains": "*"
+  }
+]
+```
+
+Legacy style:
 
 ```javascript
 pref("extensions.typical-reply@clear-code.com.reply.abuse.label",          "Report as Abuse Mail");
