@@ -146,7 +146,7 @@ async function startTypicalReply(params) {
 
   log('perpare body ');
   const body = `${String(params.body || '').replace(/\r\n?/g, '\n')}\n`;
-  const bodyImage = params.bodyImage && await getImageDataURI(params.bodyImage).catch(error => {
+  const bodyImage = params.bodyImage && !composeInfo.details.isPlainText && await getImageDataURI(params.bodyImage).catch(error => {
     log('failed to get image data: URI ', error);
     return '';
   });
