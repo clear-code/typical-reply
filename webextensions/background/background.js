@@ -14,6 +14,24 @@ import * as MessageBody from '/extlib/messageBody.js';
 
 MessageBody.setLogger(log);
 
+configs.$loaded.then(() => {
+  const buttons = configs.buttons || [];
+  if (buttons.length > 1)
+    return;
+
+  const button = buttons[0];
+  if (!button.quoteType && !button.forwardType)
+    return;
+
+  browser.messageDisplayAction.setPopup({ popup: '' });
+  browser.messageDisplayAction.setTitle({ title: button.label });
+  if (button.icon)
+    browser.messageDisplayAction.setIcon({ path: button.icon });
+  browser.messageDisplayAction.onClicked.addListener((_tab, _info) => {
+    startTypicalReply(button).catch(console.error);
+  });
+});
+
 let lastComposingResolver;
 
 browser.runtime.onMessage.addListener((message, sender) => {
