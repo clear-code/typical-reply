@@ -117,9 +117,14 @@ async function doButtonCommand(id) {
   browser.compose.setComposeDetails(composeInfo.tabId, details);
 
   const body = `${String(definition.body || '').replace(/\r\n?/g, '\n')}\n`;
+  const bodyImage = definition.bodyImage && await getImageDataURI(definition.bodyImage).catch(error => {
+    log('failed to get image data: URI ', error);
+    return '';
+  });
   const quotation = (!definition.forwardType && definition.quoteType == Constants.QUOTE_ALWAYS) ?
     (await MessageBody.getBody(message.id)).replace(/^/gm, '> ') : '';
 
+  log('set body ', { body, bodyImage, quotation });
   browser.tabs.executeScript(composeInfo.tabId, {
     code: `(() => {
       const citePrefix = document.querySelector('body > div.moz-cite-prefix');
@@ -127,6 +132,10 @@ async function doButtonCommand(id) {
         console.log('current body: ', { body: document.body, citePrefix });
 
       let body = ${JSON.stringify(body)};
+
+      const bodyImage = ${JSON.stringify(bodyImage)};
+      if (bodyImage)
+        body += '<img src=' + JSON.stringify(bodyImage) + ' alt="">\\n';
 
       const quotation = ${JSON.stringify(quotation)};
       if (!citePrefix && quotation)
@@ -141,4 +150,36 @@ async function doButtonCommand(id) {
       range.detach();
     })();`,
   });
+}
+
+async function getImageDataURI(url) {
+  if (url.startsWith('data:'))
+    return url;
+
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    let resolved = false;
+    let rejected = false;
+    image.addEventListener('load', () => {
+      if (rejected)
+        return;
+      resolved = true;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+
+      const context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    }, { once: true });
+    image.addEventListener('error', error => {
+      if (resolved)
+        return;
+      rejected = true;
+      reject(error);
+    }, { once: true });
+    image.src = url;
+  });
+
 }
