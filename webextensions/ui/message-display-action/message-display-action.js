@@ -192,10 +192,6 @@ function evaluateXPath(expression, context, type) {
   }
 }
 
-function hasClass(className) {
-  return `contains(concat(" ", normalize-space(@class), " "), " ${className} ")`;
-}
-
 function getPreviousItem(base, condition = '') {
   const extrcondition = condition ? `[${condition}]` : '' ;
   const item = (

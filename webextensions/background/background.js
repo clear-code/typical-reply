@@ -36,7 +36,6 @@ configs.$loaded.then(() => {
 
 browser.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
   const buttons = configs.buttons || [];
-  const account = await browser.accounts.get(message.folder.accountId);
   const allDisabled = (await Promise.all(buttons.map(button => shouldEnableButton(button, { message })))).every(enabled => !enabled);
   if (allDisabled)
     browser.messageDisplayAction.disable(tab.id);
