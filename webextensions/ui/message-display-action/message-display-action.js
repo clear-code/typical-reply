@@ -36,6 +36,15 @@ for (const definition of (configs.buttons || [])) {
 
 function createButton(definition) {
   log(`build button: `, definition);
+  let label = sanitizeForHTMLText(definition.label);
+  if (definition.accesskey) {
+    const accesskeyMatcher = definition.accesskey && new RegExp(`^(.*)(${definition.accesskey})(.*)$`, 'i');
+    const matched = label.match(accesskeyMatcher);
+    if (matched)
+      label = `${sanitizeForHTMLText(matched[1])}<key>${sanitizeForHTMLText(matched[2])}</key>${sanitizeForHTMLText(matched[3])}`
+    else
+      label += `(<key>${sanitizeForHTMLText(definition.accesskey)}</key>)`
+  }
   appendContents(container, `
     <li class="flex-box row"
        ><button id=${JSON.stringify('button:' + sanitizeForHTMLText(definition.id))}
@@ -44,7 +53,7 @@ function createButton(definition) {
                ><span class="icon flex-box column"
                       style='background-image:url(${JSON.stringify(sanitizeForHTMLText(definition.icon))})'
                      ></span><label class="flex-box column"
-                                   >${sanitizeForHTMLText(definition.label)}</label></button></li>
+                                   ><span>${label}</span></label></button></li>
   `.trim());
   Dialog.initButton(container.lastChild, async _event => {
     browser.runtime.sendMessage({

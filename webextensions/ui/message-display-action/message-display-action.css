@@ -57,6 +57,11 @@ button > label {
   text-align: left;
 }
 
+button key {
+  display: inline;
+  text-decoration: underline;
+}
+
 button:not([disabled]):hover,
 button:not([disabled]):focus {
   color: HighlightText;
