@@ -103,8 +103,9 @@ export function sanitizeForHTMLText(text) {
   return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-export async function shouldEnableButton(button, { message }) {
-  const account = await browser.accounts.get(message.folder.accountId);
+export async function shouldEnableButton(button, { message, account }) {
+  if (!account)
+    account = await browser.accounts.get(message.folder.accountId);
   if (!button.allowedDomains || button.allowedDomains == '*')
     return true;
   const domains = new Set(Array.isArray(button.allowedDomains) ? button.allowedDomains : [button.allowedDomains]);

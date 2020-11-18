@@ -20,6 +20,7 @@ const container = document.getElementById('commands');
 browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(async tabs => {
   const tab     = tabs[0];
   const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
+  const account = await browser.accounts.get(message.folder.accountId);
   log('original message: ', message);
 
   for (const definition of (configs.buttons || [])) {
@@ -28,16 +29,16 @@ browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRE
         ...definition,
         id:        `${definition.id}:no-quote`,
         quoteType: Constants.QUOTE_NEVER
-      }, { message });
+      }, { message, account });
       createButton({
         ...definition,
         id:        `${definition.id}:with-quote`,
         quoteType: Constants.QUOTE_ALWAYS,
         label:     `${configs.labelQuotePrefix}${definition.label}${configs.labelQuoteSuffix}`
-      }, { message });
+      }, { message, account });
     }
     else {
-      createButton(definition, { message });
+      createButton(definition, { message, account });
     }
   }
 });
