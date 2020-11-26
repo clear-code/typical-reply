@@ -35,7 +35,7 @@
   "exampleButton_reportInline_subject":       { "message": " " },
   "exampleButton_reportInline_body":          { "message": "Reported." },
 
-  "labelQuotePrefix":       { "message": " " },
+  "labelQuotePrefix":       { "message": "\u200b" },
   "labelQuoteSuffix":       { "message": " with Quote" },
   "labelNotAllowedTitle":   { "message": "Cannot send a typical reply to not allowed domains." },
   "labelNotAllowedMessage": { "message": "Canceled to send a typical reply, because there is one or more address which is not allowed." },

@@ -35,7 +35,7 @@
   "exampleButton_reportInline_subject":       { "message": " " },
   "exampleButton_reportInline_body":          { "message": "報告します。" },
 
-  "labelQuotePrefix":       { "message": " " },
+  "labelQuotePrefix":       { "message": "\u200b" },
   "labelQuoteSuffix":       { "message": ":引用付き" },
   "labelNotAllowedTitle":   { "message": "定型返信できない宛先が含まれています" },
   "labelNotAllowedMessage": { "message": "定型返信できないドメインのアドレスが宛先に含まれているため、操作をキャンセルします。" },
