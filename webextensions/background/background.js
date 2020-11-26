@@ -8,7 +8,7 @@
 import {
   configs,
   log,
-  shouldEnableButton,
+  shouldEnableCommand,
   getRecipients,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -24,7 +24,7 @@ configs.$loaded.then(() => {
 browser.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
   const buttons = configs.buttons || [];
   const account = await browser.accounts.get(message.folder.accountId);
-  const allDisabled = (await Promise.all(buttons.map(button => shouldEnableButton(button, { message, account })))).every(enabled => !enabled);
+  const allDisabled = (await Promise.all(buttons.map(button => shouldEnableCommand(button, { message, account })))).every(enabled => !enabled);
   if (allDisabled)
     browser.messageDisplayAction.disable(tab.id);
   else
@@ -85,6 +85,8 @@ function updateMessageHeaderButton() {
 }
 
 
+const mContextMenuDefinitons = new Map();
+
 function defineContextMenuItems() {
   log('defineContextMenuItems');
   for (const definition of (configs.buttons || [])) {
@@ -106,10 +108,40 @@ function defineContextMenuItems() {
       });
     }
   }
+
+  browser.menus.onShown.addListener(async (info, _tab) => {
+    const message = info.selectedMessages && info.selectedMessages.messages.length > 0 && info.selectedMessages.messages[0] || null;
+    const promisedUpdated = [];
+    for (const [id, definition] of mContextMenuDefinitons.entries()) {
+      promisedUpdated.push(shouldEnableCommand(definition, { message }).then(enabled => {
+        if (enabled == definition.enabled)
+          return false;
+        definition.enabled = enabled;
+        browser.menus.update(id, { enabled });
+        return true;
+      }).catch(console.error));
+    }
+    const updated = await Promise.all(promisedUpdated);
+    if (updated.some(updated => !!updated)) {
+      log('updated, refresh');
+      browser.menus.refresh();
+    }
+    else {
+      log('not updated');
+    }
+  });
+
+  browser.menus.onClicked.addListener(async (info, _tab) => {
+    const definition = mContextMenuDefinitons.get(info.menuItemId);
+    if (definition && definition.enabled)
+      startTypicalReply(definition);
+  });
 }
 
 function defineContextMenuItemsFor(definition) {
   log(`build menu item: `, definition);
+  mContextMenuDefinitons.set(definition.id, definition);
+  definition.enabled = true;
   const params = {
     id:       definition.id,
     title:    definition.label,

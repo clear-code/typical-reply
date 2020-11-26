@@ -103,15 +103,15 @@ export function sanitizeForHTMLText(text) {
   return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-export async function shouldEnableButton(button, { message, account }) {
+export async function shouldEnableCommand(definition, { message, account }) {
   if (!account)
     account = await browser.accounts.get(message.folder.accountId);
-  if (!button.allowedDomains || button.allowedDomains == '*')
+  if (!definition.allowedDomains || definition.allowedDomains == '*')
     return true;
-  const domains = new Set(Array.isArray(button.allowedDomains) ? button.allowedDomains : [button.allowedDomains]);
+  const domains = new Set(Array.isArray(definition.allowedDomains) ? definition.allowedDomains : [definition.allowedDomains]);
   const { to, cc, bcc } = await getRecipients({
     originalMessage: message,
-    recipientType:   button.recipients,
+    recipientType:   definition.recipients,
     myAddress:       account.identities[0].email
   });
   const allRecipients = [...to, ...cc, ...bcc];

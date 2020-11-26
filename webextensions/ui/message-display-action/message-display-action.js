@@ -10,7 +10,7 @@ import {
   log,
   appendContents,
   sanitizeForHTMLText,
-  shouldEnableButton,
+  shouldEnableCommand,
 } from '/common/common.js';
 import * as Dialog from '/extlib/dialog.js';
 import * as Constants from '/common/constants.js';
@@ -71,7 +71,7 @@ function createButton(definition, { message } = {}) {
   log(' => source: ', source);
   appendContents(container, source);
   const button = container.lastChild.querySelector('button');
-  shouldEnableButton(definition, { message }).then(enabled => {
+  shouldEnableCommand(definition, { message }).then(enabled => {
     if (!enabled)
       return;
     button.removeAttribute('disabled');
