@@ -17,21 +17,8 @@ import * as MessageBody from '/extlib/messageBody.js';
 MessageBody.setLogger(log);
 
 configs.$loaded.then(() => {
-  const buttons = configs.buttons || [];
-  if (buttons.length > 1)
-    return;
-
-  const button = buttons[0];
-  if (!button.quoteType && !button.forwardType)
-    return;
-
-  browser.messageDisplayAction.setPopup({ popup: '' });
-  browser.messageDisplayAction.setTitle({ title: button.label });
-  if (button.icon)
-    browser.messageDisplayAction.setIcon({ path: button.icon });
-  browser.messageDisplayAction.onClicked.addListener((_tab, _info) => {
-    startTypicalReply(button).catch(console.error);
-  });
+  defineContextMenuItems();
+  updateMessageHeaderButton();
 });
 
 browser.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
@@ -77,6 +64,71 @@ browser.runtime.onMessage.addListener((message, _sender) => {
       break;
   }
 });
+
+
+function updateMessageHeaderButton() {
+  const buttons = configs.buttons || [];
+  if (buttons.length > 1)
+    return;
+
+  const button = buttons[0];
+  if (!button.quoteType && !button.forwardType)
+    return;
+
+  browser.messageDisplayAction.setPopup({ popup: '' });
+  browser.messageDisplayAction.setTitle({ title: button.label });
+  if (button.icon)
+    browser.messageDisplayAction.setIcon({ path: button.icon });
+  browser.messageDisplayAction.onClicked.addListener((_tab, _info) => {
+    startTypicalReply(button).catch(console.error);
+  });
+}
+
+
+function defineContextMenuItems() {
+  log('defineContextMenuItems');
+  for (const definition of (configs.buttons || [])) {
+    if (!definition.quoteType && !definition.forwardType) {
+      defineContextMenuItemsFor({
+        ...definition,
+        id: `${definition.id}:no-quote`
+      });
+      defineContextMenuItemsFor({
+        ...definition,
+        id:    `${definition.id}:with-quote`,
+        label: `${configs.labelQuotePrefix}${definition.label}${configs.labelQuoteSuffix}`
+      });
+    }
+    else {
+      defineContextMenuItemsFor({
+        ...definition,
+        id: `${definition.id}:fixed`
+      });
+    }
+  }
+}
+
+function defineContextMenuItemsFor(definition) {
+  log(`build menu item: `, definition);
+  const params = {
+    id:       definition.id,
+    title:    definition.label,
+    contexts: ['message_list'],
+  };
+  if (definition.accesskey) {
+    const accesskeyMatcher = definition.accesskey && new RegExp(`^(.*)(${definition.accesskey})(.*)$`, 'i');
+    const matched = params.title.match(accesskeyMatcher);
+    log('label match result: ', matched);
+    if (matched)
+      params.title = `${matched[1]}&${matched[2]}${matched[3]}`
+    else
+      params.title += `(&${definition.accesskey})`
+  }
+  if (definition.icon)
+    params.icons = { '16': definition.icon };
+  browser.menus.create(params);
+}
+
 
 async function startTypicalReply(params) {
   log(`startTypicalReply: `, params);
