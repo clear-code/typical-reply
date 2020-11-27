@@ -17,7 +17,7 @@ import * as Constants from '/common/constants.js';
 
 const container = document.getElementById('commands');
 
-browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(async tabs => {
+browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(async tabs => {
   const tab     = tabs[0];
   const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
   const account = await browser.accounts.get(message.folder.accountId);

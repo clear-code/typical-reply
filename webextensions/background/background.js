@@ -167,7 +167,7 @@ async function startTypicalReply(params) {
   if (!params)
     return;
 
-  const tabs = await browser.mailTabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT });
+  const tabs = await browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT });
   if (tabs.length == 0)
     return;
 
