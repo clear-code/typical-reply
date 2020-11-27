@@ -75,7 +75,7 @@ function createButton(definition, { message } = {}) {
     if (!enabled)
       return;
     button.removeAttribute('disabled');
-    Dialog.initButton(container.lastChild, async _event => {
+    Dialog.initButton(button, async _event => {
       browser.runtime.sendMessage({
         type: Constants.TYPE_DO_BUTTON_COMMAND,
         params: definition
