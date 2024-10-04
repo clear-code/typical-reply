@@ -162,18 +162,26 @@ function defineContextMenuItemsFor(definition) {
 }
 
 
-async function startTypicalReply(params) {
+async function startTypicalReply(params, message) {
   log(`startTypicalReply: `, params);
   if (!params)
     return;
 
-  const tabs = await browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT });
-  if (tabs.length == 0)
-    return;
+  if (!message) {
+    const tabs = await browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT });
+    log('tabs: ', tabs);
+    if (tabs.length == 0)
+      return;
 
-  const tab     = tabs[0];
-  const message = await browser.messageDisplay.getDisplayedMessage(tab.id);
-  log('original message: ', message);
+    const tab = tabs[0];
+    message = await browser.messageDisplay.getDisplayedMessage(tab.id);
+    log('original message: ', message);
+    if (!message) {
+      const messages = await browser.mailTabs.getSelectedMessages(tab.id);
+      log('selected messages: ', messages);
+      return Promise.all(messages.messages.map(message => startTypicalReply(params, message)));
+    }
+  }
 
   const composeInfo = await new Promise(async (resolve, _reject) => {
     lastComposingResolver = resolve;
