@@ -37,7 +37,7 @@ Of course you can add new types of typical replies as you like.
 For example, assume that you are going to add a new "Awesome!" button.
 
  1. Define the internal type name. Now I use `awesome`.
- 2. Define name of the reply type. It must be defined as a object in an array under the key "buttons" in the managed storage for WebExtensions, like:
+ 2. Define name of the reply type. It must be defined as a object in an array under the key "buttons" in the [https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/storage/managed#provisioning_managed_storage](managed storage for WebExtensions) (see also [descriptions about managed storage manifest system](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/Native_manifests#managed_storage_manifests) and the [enterprise policy](https://support.mozilla.org/kb/customizing-firefox-using-policiesjson)), like:
     
         "buttons": [
           {
@@ -250,6 +250,37 @@ Managed storage for WebExtensions:
     "bodyImage":      "data:image/png,...(awesome.png)..."
   }
 ]
+```
+
+Here is an example of policies.json defining the managed storage:
+
+```json
+{
+  "policies": {
+    "3rdparty": {
+      "Extensions": {
+        "typical-reply@clear-code.com": {
+          "buttons": [
+            {
+              "id":             "awesome",
+              "label":          "Awesome!",
+              "accesskey":      "L",
+              "subjectPrefix":  "[[!Awesome]]",
+              "subject":        "",
+              "body":           "Awesome!",
+              "recipients":     "all",
+              "forwardType":    "",
+              "quoteType":      "",
+              "allowedDomains": "*",
+              "icon":           "...",
+              "bodyImage":      "..."
+            }
+          ]
+        }
+      }
+    }
+  }
+}
 ```
 
 Legacy style:
